@@ -103,7 +103,6 @@
 		</div>
 <?php }?>
 	</div>
-	
 	<!-- /.container -->
 	<script src="./assets/js/jquery/1.12.4/jquery.min.js"></script>
 	<script src="./assets/bootstrap/dist/js/bootstrap.min.js"></script>
