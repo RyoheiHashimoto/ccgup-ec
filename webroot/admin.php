@@ -11,7 +11,6 @@ require_once DIR_MODEL . 'item.php';
 require_once DIR_MODEL . 'user.php';
 
 print DIR_IMG_FULL;
-
 {
 	session_start();
 
