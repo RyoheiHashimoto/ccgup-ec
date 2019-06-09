@@ -102,15 +102,15 @@
 							<tbody>
 <?php foreach ( $response['items']as $key => $item ) {?>
 								<tr
-									class="<?php echo (0 === ($key % 2)) ? 'stripe' : '' ; ?> <?php echo ('1' !== $item['status']) ? 'disable' : '' ; ?>">
+									class="<?php echo h((0 === ($key % 2)) ? 'stripe' : '' ); ?> <?php echo h(('1' !== $item['status']) ? 'disable' : '' ); ?>">
 									<td rowspan="2"><img class="w-100"
-										src="<?php echo DIR_IMG . $item['img']; ?>"></td>
-									<td><?php echo $item['name']?></td>
-									<td><?php echo number_format($item['price'])?>円</td>
+										src="<?php echo h(DIR_IMG . $item['img']); ?>"></td>
+									<td><?php echo h($item['name']); ?></td>
+									<td><?php echo h(number_format($item['price'])); ?>円</td>
 									<td>
 										<form method="post">
 											<input type="hidden" name="id"
-												value="<?php echo $item['id']; ?>"> <input
+												value="<?php echo h($item['id']); ?>"> <input
 												type="hidden" name="action" value="update_status">
 <?php if ($item['status'] === '1') { ?>
 											<button type="submit" class="btn btn-success">公開 → 非公開にする</button>
@@ -123,17 +123,17 @@
 									</td>
 								</tr>
 								<tr
-									class="<?php echo (0 === ($key % 2)) ? 'stripe' : '' ; ?> <?php echo ('1' !== $item['status']) ? 'disable' : '' ; ?>">
+									class="<?php echo h((0 === ($key % 2)) ? 'stripe' : '' ); ?> <?php echo h(('1' !== $item['status']) ? 'disable' : '' ); ?>">
 									<td colspan="2">
 										<form method="post" class="form-inline">
 											<input type="hidden" name="id"
-												value="<?php echo $item['id']; ?>"> <input
+												value="<?php echo h($item['id']); ?>"> <input
 												type="hidden" name="action" value="update_stock">
 
 											<div class="form-group">
 												<input class="form-control" style="width: 80px;"
 													type="number" class="input_text_width text_align_right"
-													name="stock" value="<?php echo $item['stock']; ?>">
+													name="stock" value="<?php echo h($item['stock']); ?>">
 												<span>個</span>
 											</div>
 											<button type="submit" class="btn btn-primary ml-2">変更する</button>
@@ -143,7 +143,7 @@
 										<form method="post" onsubmit="return check()">
 											<input type="hidden" name="action" value="delete"> <input
 												type="hidden" name="id"
-												value="<?php echo $item['id']; ?>">
+												value="<?php echo h($item['id']); ?>">
 											<button type="submit" class="btn btn-danger">削除する</button>
 										</form>
 									</td>

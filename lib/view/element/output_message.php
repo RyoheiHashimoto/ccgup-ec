@@ -8,7 +8,7 @@
 <?php if (empty($response['result_msg']) !== TRUE) { ?>
 <div class="row">
 	<div class="col-12 alert alert-success" role="alert">
-		<?php echo $response['result_msg']; ?>
+		<?php echo h($response['result_msg']); ?>
 	</div>
 </div>
 <?php } ?>
@@ -18,9 +18,9 @@
 	<div class="col-12 alert alert-danger" role="alert">
 <?php
 	if (is_array($response['error_msg'])) {
-		echo implode('<br>', $response['error_msg']);
+		echo h(implode('<br>', $response['error_msg']));
 	} else {
-		echo $response['error_msg'];
+		echo h($response['error_msg']);
 	}
 	?>
 	</div>
