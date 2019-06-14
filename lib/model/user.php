@@ -12,12 +12,12 @@
  * @return NULL|array
  */
 function user_get_login($db, $login_id, $password) {
-	$sql = <<<EOD
- SELECT id, login_id, password, is_admin, create_date, update_date
- FROM users
- WHERE login_id = '{$login_id}' AND password = sha1('{$password}')
-EOD;
-	return db_select_one($db, $sql);
+	$sql =
+	'SELECT id, login_id, password, is_admin, create_date, update_date
+ 	FROM users
+	WHERE login_id = ? AND password = ?;';
+	$params = array($login_id, $password); 
+	return db_select_one($db, $sql, $login_id, $password);
 }
 
 /**
@@ -26,11 +26,10 @@ EOD;
  * @return NULL|array
  */
 function user_get($db, $id) {
-	$sql = <<<EOD
- SELECT id, login_id, password, is_admin, create_date, update_date
- FROM users
- WHERE id = {$id}
-EOD;
-
-	return db_select_one($db, $sql);
+	$sql =
+	'SELECT id, login_id, password, is_admin, create_date, update_date
+ 	FROM users
+	WHERE id = ?;';
+	$params = array($id);
+	return db_select_one($db, $sql, $params);
 }
