@@ -33,8 +33,9 @@ function item_delete($db, $id) {
 	if (!empty($row)) {
 		@unlink(DIR_IMG_FULL . $row['img']);
 	}
-	$sql = 'DELETE FROM items WHERE id = ' . $id;
-	return db_update($db, $sql);
+	$sql = 'DELETE FROM items WHERE id = ?;';
+	$params = array($id);
+	return db_update($db, $sql, $params);
 }
 
 /**
@@ -42,13 +43,12 @@ function item_delete($db, $id) {
  * @return array
  */
 function item_list($db, $is_active_only = true) {
-	$sql = <<<EOD
- SELECT id, name, price, img, stock, status, create_date, update_date
- FROM items
-EOD;
+	$sql =
+	'SELECT id, name, price, img, stock, status, create_date, update_date
+	FROM items';
 
 	if ($is_active_only) {
-		$sql .= " WHERE status = 1";
+		$sql .= ' WHERE status = 1';
 	}
 
 	return db_select($db, $sql);
@@ -60,13 +60,12 @@ EOD;
  * @return NULL|mixed
  */
 function item_get($db, $id) {
-	$sql = <<<EOD
- SELECT id, name, price, img, stock, status, create_date, update_date
- FROM items
- WHERE id = {$id}
-EOD;
-
-	return db_select_one($db, $sql);
+	$sql =
+	'SELECT id, name, price, img, stock, status, create_date, update_date
+	FROM items
+	WHERE id = ?;';
+	$params = array($id);
+	return db_select_one($db, $sql, $params);
 }
 
 /**
@@ -76,12 +75,12 @@ EOD;
  * @return boolean
  */
 function item_update_stock($db, $id, $stock) {
-	$sql = <<<EOD
- UPDATE items
- SET stock = {$stock}, update_date = NOW()
- WHERE id = {$id}
-EOD;
-	return db_update($db, $sql);
+	$sql = 
+	'UPDATE items
+ 	SET stock = ?, update_date = NOW()
+	WHERE id = ?;';
+	$params = array($stock, $id);
+	return db_update($db, $sql, $params);
 }
 
 /**
@@ -91,12 +90,12 @@ EOD;
  * @return boolean
  */
 function item_update_saled($db, $id, $amount) {
-	$sql = <<<EOD
- UPDATE items
- SET stock = stock - {$amount}, update_date = NOW()
- WHERE id = {$id}
-EOD;
-	return db_update($db, $sql);
+	$sql = 
+	'UPDATE items
+ 	SET stock = stock - ?, update_date = NOW()
+ 	WHERE id = ?;';
+	$params = array($amount, $id);
+	return db_update($db, $sql, $params);
 }
 
 /**
@@ -106,12 +105,12 @@ EOD;
  * @return boolean
  */
 function item_update_status($db, $id, $status) {
-	$sql = <<<EOD
- UPDATE items
- SET status = {$status}, update_date = NOW()
- WHERE id = {$id}
-EOD;
-	return db_update($db, $sql);
+	$sql =
+	'UPDATE items
+ 	SET status = ?, update_date = NOW()
+	WHERE id = ?;';
+	$params = array($status, $id); 
+	return db_update($db, $sql, $params);
 }
 
 /**
