@@ -40,14 +40,14 @@ function __finish($db, &$response) {
 	}
 	$response['total_price'] = cart_total_price($db, $_SESSION['user']['id']);
 
-	if (is_valid_token() === TRUE) {
-		foreach ($response['cart_items']as $item) {
-			item_update_saled($db, $item['item_id'], $item['amount']);
-		}
-		cart_clear($db, $_SESSION['user']['id']);
-
-		$response['result_msg'] = 'ご購入、ありがとうございました。';
-	} else {
+	if (is_valid_token() === FALSE) {
 		$response['error_msg'] = 'リクエストが不適切です。';
+		return;
 	}
+	foreach ($response['cart_items']as $item) {
+		item_update_saled($db, $item['item_id'], $item['amount']);
+	}
+	cart_clear($db, $_SESSION['user']['id']);
+
+	$response['result_msg'] = 'ご購入、ありがとうございました。';
 }

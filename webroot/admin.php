@@ -17,7 +17,6 @@ require_once DIR_MODEL . 'user.php';
 	$response = array();
 	$db = db_connect();
 	// $dbを引数としてcheck_logined関数をコール
-	// 
 	check_logined($db);
 
 	__update($db, $response);
@@ -25,7 +24,7 @@ require_once DIR_MODEL . 'user.php';
 	$response['items'] = item_list($db, false);
 
 	make_token();
-	
+
 }
 require_once DIR_VIEW . 'admin.php';
 
@@ -38,21 +37,23 @@ function __update($db, &$response) {
 	if ($_SERVER['REQUEST_METHOD'] !== "POST") {
 		return;
 	}
-	if (is_valid_token() === TRUE) {
-		switch ($_POST['action']) {
-			case 'regist' :
-				__regist($db, $response);
-				return;
-			case 'delete' :
-				__delete($db, $response);
-				return;
-			case 'update_stock' :
-				__update_stock($db, $response);
-				return;
-			case 'update_status' :
-				__update_status($db, $response);
-				return;
-		}
+	if (is_valid_token() === FALSE) {
+		$response['error_msg'] = 'リクエストが不適切です。';
+		return;
+	}
+	switch ($_POST['action']) {
+		case 'regist' :
+			__regist($db, $response);
+			return;
+		case 'delete' :
+			__delete($db, $response);
+			return;
+		case 'update_stock' :
+			__update_stock($db, $response);
+			return;
+		case 'update_status' :
+			__update_status($db, $response);
+			return;
 	}
 	$response['error_msg'] = 'リクエストが不適切です。';
 	return;

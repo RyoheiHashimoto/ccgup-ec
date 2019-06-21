@@ -20,7 +20,7 @@ require_once DIR_MODEL . 'item.php';
 	$response['items'] = item_list($db);
 
 	make_token();
-	
+
 }
 require_once DIR_VIEW  . 'top.php';
 
@@ -35,18 +35,19 @@ function __regist($db, &$response) {
 
 	check_logined($db);
 
-	if (is_valid_token() === TRUE) {
-		
-		if (empty($_POST['id']) === TRUE) {
-			$response['error_msg'] = '商品の指定が不適切です。';
-			return;
-		}
-
-		if (cart_regist($db, $_SESSION['user']['id'], $_POST['id'])) {
-			$response['result_msg'] = 'カートに登録しました。';
-			return;
-		}
+	if (is_valid_token() === FALSE) {
+		$response['error_msg'] = 'リクエストが不適切です。';
+		return;
 	}
+	if (empty($_POST['id']) === TRUE) {
+		$response['error_msg'] = '商品の指定が不適切です。';
+		return;
+	}
+	if (cart_regist($db, $_SESSION['user']['id'], $_POST['id'])) {
+		$response['result_msg'] = 'カートに登録しました。';
+		return;
+	}
+
 	$response['error_msg'] = 'カート登録に失敗しました。';
 	return;
 }
