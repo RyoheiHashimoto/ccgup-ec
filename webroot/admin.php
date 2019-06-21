@@ -12,11 +12,13 @@ require_once DIR_MODEL . 'user.php';
 
 print DIR_IMG_FULL;
 {
+	// session_start関数をコール、セッションID新規発行orセッション再開
 	session_start();
-
+	// $responseを配列宣言、関数db_connectをコールし返り値(PDO)を$dbに代入
 	$response = array();
 	$db = db_connect();
-
+	// $dbを引数としてcheck_logined関数をコール
+	// 
 	check_logined($db);
 
 	__update($db, $response);
@@ -24,7 +26,11 @@ print DIR_IMG_FULL;
 	$response['items'] = item_list($db, false);
 
 	require_once DIR_VIEW . 'admin.php';
+
 }
+
+var_dump($_POST);
+var_dump($_SESSION);
 
 	/**
  *
@@ -35,22 +41,22 @@ function __update($db, &$response) {
 	if ($_SERVER['REQUEST_METHOD'] !== "POST") {
 		return;
 	}
-
-	switch ($_POST['action']) {
-		case 'regist' :
-			__regist($db, $response);
-			return;
-		case 'delete' :
-			__delete($db, $response);
-			return;
-		case 'update_stock' :
-			__update_stock($db, $response);
-			return;
-		case 'update_status' :
-			__update_status($db, $response);
-			return;
+	if (is_valid_token() === TRUE) {
+		switch ($_POST['action']) {
+			case 'regist' :
+				__regist($db, $response);
+				return;
+			case 'delete' :
+				__delete($db, $response);
+				return;
+			case 'update_stock' :
+				__update_stock($db, $response);
+				return;
+			case 'update_status' :
+				__update_status($db, $response);
+				return;
+		}
 	}
-
 	$response['error_msg'] = 'リクエストが不適切です。';
 	return;
 }
@@ -62,6 +68,7 @@ function __update($db, &$response) {
  */
 function __regist($db, &$response) {
 	$response['error_msg'] = array();
+	
 	if (!isset($_POST['name'])) {
 		$response['error_msg'][] = '商品名を指定してください。';
 	} else if (mb_strlen($_POST['name']) < 3 || mb_strlen($_POST['name']) > 100) {
@@ -160,3 +167,5 @@ function __update_status($db, &$response) {
 	}
 	$response['error_msg'] = 'ステータスの削除に失敗しました。';
 }
+
+make_token();

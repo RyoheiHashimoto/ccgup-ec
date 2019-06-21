@@ -134,3 +134,25 @@ function check_logined($db) {
 function h($str) {
 	return htmlspecialchars($str, ENT_QUOTES, 'UTF-8');
 }
+
+function make_token() {
+	// $tokenに乱数を含む一意のIDのハッシュ値を代入
+	$token = sha1(uniqid(mt_rand(), true));
+	// さらに$tokenを$_SESSIONのtokenキーに代入
+	$_SESSION['token'] = $token;
+}
+
+function is_valid_token() {
+	// $_POSTのtokenキーに値が無ければ
+	if (empty($_POST['token'])) {
+		// falseを返す
+		return false;
+	}
+	// $_SESSIONのtokenキーに値が無ければ
+	if (empty($_SESSION['token'])) {
+		// falseを返す
+		return false;
+	}
+	// 上記に合致しなければtrueを返す
+	return $_SESSION['token'] === $_POST['token'];
+}

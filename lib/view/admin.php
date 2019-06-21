@@ -32,6 +32,7 @@
 					<div class="my-4">
 						<h2>商品の登録</h2>
 						<form method="post" enctype="multipart/form-data">
+							<input type="hidden" name="token" value="<?php echo $_SESSION['token']; ?>">
 							<input type="hidden" name="action" value="regist">
 							<div class="form-row">
 								<div class="form-group col-md-6 row">
