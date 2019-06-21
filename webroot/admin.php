@@ -10,8 +10,6 @@ require_once '../lib/config/const.php';
 require_once DIR_MODEL . 'function.php';
 require_once DIR_MODEL . 'item.php';
 require_once DIR_MODEL . 'user.php';
-
-print DIR_IMG_FULL;
 {
 	// session_start関数をコール、セッションID新規発行orセッション再開
 	session_start();
@@ -26,14 +24,12 @@ print DIR_IMG_FULL;
 
 	$response['items'] = item_list($db, false);
 
-	require_once DIR_VIEW . 'admin.php';
-
+	make_token();
+	
 }
+require_once DIR_VIEW . 'admin.php';
 
-var_dump($_POST);
-var_dump($_SESSION);
-
-	/**
+/**
  *
  * @param PDO $db
  * @param array $response
@@ -168,5 +164,3 @@ function __update_status($db, &$response) {
 	}
 	$response['error_msg'] = 'ステータスの削除に失敗しました。';
 }
-
-make_token();

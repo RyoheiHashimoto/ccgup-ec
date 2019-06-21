@@ -19,9 +19,9 @@ require_once DIR_MODEL . 'item.php';
 	check_logined($db);
 
 	__finish($db, $response);
-
-	require_once DIR_VIEW . 'finish.php';
+	
 }
+require_once DIR_VIEW . 'finish.php';
 
 /**
  * @param PDO $db
@@ -32,18 +32,22 @@ function __finish($db, &$response) {
 		$response['error_msg'] = 'リクエストが不適切です。';
 		return;
 	}
+
 	$response['cart_items'] = cart_list($db, $_SESSION['user']['id']);
 	if (empty($response['cart_items'])) {
 		$response['error_msg'] = 'カートに商品がありません。';
 		return;
 	}
-
 	$response['total_price'] = cart_total_price($db, $_SESSION['user']['id']);
 
-	foreach ($response['cart_items']as $item) {
-		item_update_saled($db, $item['item_id'], $item['amount']);
-	}
-	cart_clear($db, $_SESSION['user']['id']);
+	if (is_valid_token() === TRUE) {
+		foreach ($response['cart_items']as $item) {
+			item_update_saled($db, $item['item_id'], $item['amount']);
+		}
+		cart_clear($db, $_SESSION['user']['id']);
 
-	$response['result_msg'] = 'ご購入、ありがとうございました。';
+		$response['result_msg'] = 'ご購入、ありがとうございました。';
+	} else {
+		$response['error_msg'] = 'リクエストが不適切です。';
+	}
 }

@@ -54,25 +54,24 @@
 							<td>
 								<form action="<?php echo h($_SERVER['SCRIPT_NAME']); ?>" method="post">
 									<button type="submit" class="btn btn-danger btn-sm">削除</button>
-									<input type="hidden" name="id"
-										value="<?php echo h($value['id']); ?>"> <input
-										type="hidden" name="action" value="delete">
+									<input type="hidden" name="token" value="<?php echo $_SESSION['token']; ?>">
+									<input type="hidden" name="id" value="<?php echo h($value['id']); ?>">
+									<input type="hidden" name="action" value="delete">
 								</form>
 							</td>
 							<td><?php echo h(number_format($value['price'])); ?>円</td>
 							<td>
-								<form id="form_select_amount<?php echo h($value['id']); ?>"
-									action="<?php echo h($_SERVER['SCRIPT_NAME']); ?>" method="post">
-									<select name="amount"
-										onchange="submit_change_amount(<?php echo h($value['id']); ?>)">
+								<form id="form_select_amount<?php echo h($value['id']); ?>" action="<?php echo h($_SERVER['SCRIPT_NAME']); ?>" method="post">
+									<select name="amount" onchange="submit_change_amount(<?php echo h($value['id']); ?>)">
 <?php $max_count = 10; if ((int)$value['amount'] > $max_count){$max_count = (int)$value['amount'];}; ?>
 <?php for ($count = 1; $count <= $max_count; $count++)  { ?>
 										<option value="<?php echo h($count); ?>"
 											<?php if ((int)$value['amount'] === $count){echo 'selected';}; ?>><?php echo h($count);?></option>
 <?php } ?>
-                        </select> <input type="hidden" name="id"
-										value="<?php echo h($value['id']); ?>"> <input
-										type="hidden" name="action" value="update">
+									</select>
+									<input type="hidden" name="token" value="<?php echo $_SESSION['token']; ?>">
+									<input type="hidden" name="id" value="<?php echo h($value['id']); ?>">
+									<input type="hidden" name="action" value="update">
 								</form>
 							</td>
 						</tr>
@@ -83,7 +82,7 @@
 							<td></td>
 							<td></td>
 							<td colspan="2">
-								<div">
+								<div>
 									<span>合計</span> <span><?php echo h(number_format($response['total_price'])); ?>円</span>
 								</div>
 							</td>
@@ -92,6 +91,7 @@
 							<td colspan="4">
 								<div>
 									<form action="./finish.php" method="post">
+										<input type="hidden" name="token" value="<?php echo $_SESSION['token']; ?>">
 										<button type="submit" class="btn btn-warning btn-lg btn-block">購入する</button>
 									</form>
 								</div>
