@@ -23,7 +23,7 @@ print DIR_IMG_FULL;
 
 	$response['items'] = item_list($db, false);
 
-	require_once DIR_VIEW . 'admin.php';
+	include_once DIR_VIEW . 'admin.php';
 }
 
 	/**

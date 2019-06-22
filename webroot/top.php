@@ -19,7 +19,7 @@ require_once DIR_MODEL . 'item.php';
 	__regist($db, $response);
 	$response['items'] = item_list($db);
 
-	require_once DIR_VIEW  . 'top.php';
+	include_once DIR_VIEW  . 'top.php';
 }
 
 /**

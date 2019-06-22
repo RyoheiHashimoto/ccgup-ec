@@ -20,7 +20,7 @@ require_once DIR_MODEL . 'item.php';
 
 	__finish($db, $response);
 
-	require_once DIR_VIEW . 'finish.php';
+	include_once DIR_VIEW . 'finish.php';
 }
 
 /**

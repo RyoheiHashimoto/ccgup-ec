@@ -26,7 +26,7 @@ require_once DIR_MODEL . 'cart.php';
 		$response['total_price'] = cart_total_price($db, $_SESSION['user']['id']);
 	}
 
-	require_once DIR_VIEW . 'cart.php';
+	include_once DIR_VIEW . 'cart.php';
 }
 
 /**

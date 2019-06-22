@@ -18,7 +18,7 @@ require_once DIR_MODEL . 'user.php';
 	__check_logined($db);
 	__login($db, $response);
 
-	require_once DIR_VIEW  . 'login.php';
+	include_once DIR_VIEW  . 'login.php';
 }
 
 /**
