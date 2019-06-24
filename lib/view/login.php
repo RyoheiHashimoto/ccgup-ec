@@ -26,7 +26,7 @@
 <body class="text-center">
 	<form method="post" action="<?php echo h($_SERVER['SCRIPT_NAME']); ?>"
 		class="form-signin">
-<?php require DIR_VIEW_ELEMENT . 'output_message.php'; ?>
+<?php include DIR_VIEW_ELEMENT . 'output_message.php'; ?>
 		<h1 class="h3 mb-3 font-weight-normal">CodeCampSHOP</h1>
 				<label for="login-id" class="sr-only">Login ID</label> <input
 			type="text" id="login-id" name="login_id" class="form-control"
