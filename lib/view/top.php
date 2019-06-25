@@ -28,16 +28,15 @@
 		<div class="row">
 <?php foreach ($response['items'] as $value)  { ?>
 			<div class="card col-12 col-md-4 p-0 m-0 shadow-sm">
-				<img class="item-img w-100 img-responsive"
-					src="<?php echo h(DIR_IMG . $value['img']); ?>">
+				<img class="item-img w-100 img-responsive" src="<?php echo h(DIR_IMG . $value['img']); ?>">
 				<div class="card-body">
 					<div class="row item-info">
 						<div class="col-12 item-price"><?php echo h($value['name']); ?>：<?php echo h(number_format($value['price'])); ?>円</div>
 						<div class="col-12 mt-1">
 <?php if ($value['stock'] > 0) { ?>
 							<form action="<?php echo h($_SERVER['SCRIPT_NAME']); ?>" method="post">
-								<input type="hidden" name="id"
-									value="<?php echo h($value['id']); ?>">
+								<input type="hidden" name="token" value="<?php echo $_SESSION['token']; ?>">
+								<input type="hidden" name="id" value="<?php echo h($value['id']); ?>">
 								<button type="submit" class="btn btn-primary cart-btn">カートに入れる</button>
 							</form>
 <?php } else { ?>

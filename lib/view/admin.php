@@ -33,6 +33,7 @@
 						<h2>商品の登録</h2>
 						<form method="post" enctype="multipart/form-data">
 							<input type="hidden" name="action" value="regist">
+							<input type="hidden" name="token" value="<?php echo $_SESSION['token']; ?>">
 							<div class="form-row">
 								<div class="form-group col-md-6 row">
 									<label for="name" class="col-4 col-form-label-sm text-right">商品名:</label>
@@ -109,9 +110,9 @@
 									<td><?php echo h(number_format($item['price'])); ?>円</td>
 									<td>
 										<form method="post">
-											<input type="hidden" name="id"
-												value="<?php echo h($item['id']); ?>"> <input
-												type="hidden" name="action" value="update_status">
+											<input type="hidden" name="token" value="<?php echo $_SESSION['token']; ?>">
+											<input type="hidden" name="id" value="<?php echo h($item['id']); ?>">
+											<input type="hidden" name="action" value="update_status">
 <?php if ($item['status'] === '1') { ?>
 											<button type="submit" class="btn btn-success">公開 → 非公開にする</button>
 											<input type="hidden" name="status" value="0">
@@ -122,14 +123,12 @@
 										</form>
 									</td>
 								</tr>
-								<tr
-									class="<?php echo h((0 === ($key % 2)) ? 'stripe' : '' ); ?> <?php echo h(('1' !== $item['status']) ? 'disable' : '' ); ?>">
+								<tr class="<?php echo h((0 === ($key % 2)) ? 'stripe' : '' ); ?> <?php echo h(('1' !== $item['status']) ? 'disable' : '' ); ?>">
 									<td colspan="2">
 										<form method="post" class="form-inline">
-											<input type="hidden" name="id"
-												value="<?php echo h($item['id']); ?>"> <input
-												type="hidden" name="action" value="update_stock">
-
+											<input type="hidden" name="token" value="<?php echo $_SESSION['token']; ?>">
+											<input type="hidden" name="id" value="<?php echo h($item['id']); ?>">
+											<input type="hidden" name="action" value="update_stock">
 											<div class="form-group">
 												<input class="form-control" style="width: 80px;"
 													type="number" class="input_text_width text_align_right"
@@ -141,9 +140,9 @@
 									</td>
 									<td>
 										<form method="post" onsubmit="return check()">
-											<input type="hidden" name="action" value="delete"> <input
-												type="hidden" name="id"
-												value="<?php echo h($item['id']); ?>">
+											<input type="hidden" name="action" value="delete">
+											<input type="hidden" name="token" value="<?php echo $_SESSION['token']; ?>">
+											<input type="hidden" name="id" value="<?php echo h($item['id']); ?>">
 											<button type="submit" class="btn btn-danger">削除する</button>
 										</form>
 									</td>

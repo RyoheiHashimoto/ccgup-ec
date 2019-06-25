@@ -36,6 +36,7 @@
 			placeholder="Login Password" required>
 		<div class="checkbox mb-3">
 			</div>
+		<input type="hidden" name="token" value="<?php echo $_SESSION['token']; ?>">
 		<button class="btn btn-lg btn-primary btn-block" type="submit">Sign in</button>
 		<p class="mt-3 mb-3 text-muted">&copy; CodeCamp</p>
 	</form>

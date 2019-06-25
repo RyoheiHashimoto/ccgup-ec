@@ -20,8 +20,11 @@ require_once DIR_MODEL . 'item.php';
 
 	__finish($db, $response);
 
+	make_token();
+
 	include_once DIR_VIEW . 'finish.php';
 }
+
 
 /**
  * @param PDO $db
@@ -32,6 +35,12 @@ function __finish($db, &$response) {
 		$response['error_msg'] = 'リクエストが不適切です。';
 		return;
 	}
+
+	if (is_valid_token() === FALSE) {
+		$response['error_msg'] = 'リクエストが不適切です。';
+		return;
+	}
+
 	$response['cart_items'] = cart_list($db, $_SESSION['user']['id']);
 	if (empty($response['cart_items'])) {
 		$response['error_msg'] = 'カートに商品がありません。';
@@ -43,6 +52,7 @@ function __finish($db, &$response) {
 	foreach ($response['cart_items']as $item) {
 		item_update_saled($db, $item['item_id'], $item['amount']);
 	}
+	
 	cart_clear($db, $_SESSION['user']['id']);
 
 	$response['result_msg'] = 'ご購入、ありがとうございました。';
