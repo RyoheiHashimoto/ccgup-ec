@@ -19,8 +19,9 @@ require_once DIR_MODEL . 'user.php';
 	__login($db, $response);
 
 	make_token();
+
+	include_once DIR_VIEW  . 'login.php';
 }
-require_once DIR_VIEW  . 'login.php';
 
 /**
  * @param PDO $db

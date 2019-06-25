@@ -25,8 +25,8 @@ require_once DIR_MODEL . 'user.php';
 
 	make_token();
 
+	include_once DIR_VIEW . 'admin.php';
 }
-require_once DIR_VIEW . 'admin.php';
 
 /**
  *

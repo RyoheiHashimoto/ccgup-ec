@@ -21,8 +21,8 @@ require_once DIR_MODEL . 'item.php';
 
 	make_token();
 
+	include_once DIR_VIEW  . 'top.php';
 }
-require_once DIR_VIEW  . 'top.php';
 
 /**
  * @param PDO $db

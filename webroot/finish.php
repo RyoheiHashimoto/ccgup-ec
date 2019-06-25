@@ -19,9 +19,12 @@ require_once DIR_MODEL . 'item.php';
 	check_logined($db);
 
 	__finish($db, $response);
-	
+
+	make_token();
+
+	include_once DIR_VIEW . 'finish.php';
 }
-require_once DIR_VIEW . 'finish.php';
+
 
 /**
  * @param PDO $db

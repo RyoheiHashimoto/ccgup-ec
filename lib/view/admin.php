@@ -17,10 +17,10 @@
 </head>
 <body class="admin">
 
-<?php require DIR_VIEW_ELEMENT . 'output_navber.php'; ?>
+<?php include DIR_VIEW_ELEMENT . 'output_navber.php'; ?>
 
 	<div class="container-fluid px-md-3">
-<?php require DIR_VIEW_ELEMENT . 'output_message.php'; ?>
+<?php include DIR_VIEW_ELEMENT . 'output_message.php'; ?>
 		<div class="row d-md-none">
 			<div class="col-12 alert alert-danger" role="alert">
 				このページはスマートフォンには対応していません。 <br>パソコン・タブレットにてご利用ください。

@@ -28,9 +28,9 @@ require_once DIR_MODEL . 'cart.php';
 	}
 
 	make_token();
-	
+
+	include_once DIR_VIEW . 'cart.php';
 }
-require_once DIR_VIEW . 'cart.php';
 
 /**
  * @param PDO $db

@@ -17,14 +17,14 @@
 
 </head>
 <body>
-<?php require DIR_VIEW_ELEMENT . 'output_navber.php'; ?>
+<?php include DIR_VIEW_ELEMENT . 'output_navber.php'; ?>
 	<div class="container-fluid px-md-5">
 		<div class="row">
 			<div class="col-12">
 				<h1>商品一覧</h1>
 			</div>
 		</div>
-<?php require DIR_VIEW_ELEMENT . 'output_message.php'; ?>
+<?php include DIR_VIEW_ELEMENT . 'output_message.php'; ?>
 		<div class="row">
 <?php foreach ($response['items'] as $value)  { ?>
 			<div class="card col-12 col-md-4 p-0 m-0 shadow-sm">

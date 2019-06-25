@@ -17,7 +17,7 @@
 
 </head>
 <body>
-<?php require DIR_VIEW_ELEMENT . 'output_navber.php'; ?>
+<?php include DIR_VIEW_ELEMENT . 'output_navber.php'; ?>
 
 	<div class="container-fluid px-md-3">
 		<div class="row">
@@ -26,7 +26,7 @@
 			</div>
 		</div>
 
-<?php require DIR_VIEW_ELEMENT . 'output_message.php'; ?>
+<?php include DIR_VIEW_ELEMENT . 'output_message.php'; ?>
 
 <?php if ( !empty($response['cart_items'])) { ?>
 		<div class="col-xs-12 col-md-10 offset-md-1 cart-list">
