@@ -7,35 +7,28 @@
 {
 	// CSRF対策にはsessionを利用します
 	session_start();
-	make_token();
+	// tokenを発行、$_SESSIONに保存
 	$message = update();
+	make_token();
 }
 
 /**
- * getアクセス時のみtokenを発行してsessionに保存
- */
-function make_token() {
-	if ($_SERVER['REQUEST_METHOD'] !== 'GET') {
-		return;
-	}
-
-	$token = sha1(uniqid(mt_rand(), true));
-	$_SESSION['token'] = $token;
-}
-
-/**
- * sessionに保存されたtokenとpost送信されたtokenを比較
+ * sessionに保存されたtoken
+ * とpost送信されたtokenを比較
  * @return boolean
  */
-function check_token() {
+function is_valid_token() {
+	// $_POSTのtokenキーに値が無ければ
 	if (empty($_POST['token'])) {
+		// falseを返す
 		return false;
 	}
-
+	// $_SESSIONのtokenキーに値が無ければ
 	if (empty($_SESSION['token'])) {
+		// falseを返す
 		return false;
 	}
-
+	// 上記に合致しなければ
 	return $_SESSION['token'] === $_POST['token'];
 }
 
@@ -49,21 +42,28 @@ function update() {
 	}
 	$var = htmlspecialchars($_POST['var']);
 	$token = htmlspecialchars($_POST['token']);
-	if (!check_token()) {
-		return <<<EOD
-<span style="color: red;">tokenエラー</span><br>
-var： {$var}<br>
-post token： {$token}<br>
-session token： {$_SESSION['token']}
-EOD;
+	if (is_valid_token() === TRUE) {
+		return "<span>更新成功！</span><br>
+		var： {$var}<br>
+		post token： {$token}<br>
+		session token： {$_SESSION['token']}";
 	}
-	return <<<EOD
-<span style="color: blue;">更新成功！</span><br>
-var： {$var}<br>
-post token： {$token}<br>
-session token： {$_SESSION['token']}
-EOD;
+	return "<span>tokenエラー</span><br>
+	var： {$var}<br>
+	post token： {$token}<br>
+	session token： {$_SESSION['token']};";
 }
+
+/**
+ * getアクセス時のみtokenを発行してsessionに保存
+ */
+function make_token() {
+	// $tokenに乱数を含む一意のIDのハッシュ値を代入
+	$token = sha1(uniqid(mt_rand(), true));
+	// さらに$tokenを$_SESSIONのtokenキーに代入
+	$_SESSION['token'] = $token;
+}
+
 ?>
 <!DOCTYPE html>
 <html>
@@ -91,6 +91,7 @@ body {
 	<h2>実行結果</h2>
 	<p><?php echo $message; ?></p>
 	<form method="post" action="<?php echo $_SERVER['SCRIPT_NAME'];?>">
+		
 		<input type="hidden" name="token"
 			value="<?php echo $_SESSION['token']; ?>"> value: <input type="text"
 			name="var"> <input type="submit" value="submit">

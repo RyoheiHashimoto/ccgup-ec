@@ -18,8 +18,9 @@ require_once DIR_MODEL . 'user.php';
 	__check_logined($db);
 	__login($db, $response);
 
-	require_once DIR_VIEW  . 'login.php';
+	make_token();
 }
+require_once DIR_VIEW  . 'login.php';
 
 /**
  * @param PDO $db
@@ -51,7 +52,10 @@ function __login($db, &$response) {
 	if ($_SERVER['REQUEST_METHOD'] !== 'POST') {
 		return;
 	}
-
+	if (is_valid_token() === FALSE) {
+		$response['error_msg'] = 'リクエストが不適切です。';
+		return;
+	}
 	$user = user_get_login($db, $_POST['login_id'], $_POST['password']);
 	if (empty($user)) {
 		$response['error_msg'] = 'IDまたはパスワードが違います。';

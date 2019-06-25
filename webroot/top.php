@@ -19,8 +19,10 @@ require_once DIR_MODEL . 'item.php';
 	__regist($db, $response);
 	$response['items'] = item_list($db);
 
-	require_once DIR_VIEW  . 'top.php';
+	make_token();
+
 }
+require_once DIR_VIEW  . 'top.php';
 
 /**
  * @param PDO $db
@@ -33,11 +35,14 @@ function __regist($db, &$response) {
 
 	check_logined($db);
 
+	if (is_valid_token() === FALSE) {
+		$response['error_msg'] = 'リクエストが不適切です。';
+		return;
+	}
 	if (empty($_POST['id']) === TRUE) {
 		$response['error_msg'] = '商品の指定が不適切です。';
 		return;
 	}
-
 	if (cart_regist($db, $_SESSION['user']['id'], $_POST['id'])) {
 		$response['result_msg'] = 'カートに登録しました。';
 		return;
