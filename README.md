@@ -48,19 +48,19 @@ $workspace/ccg/syncs/www/dev.lesson-codecamp.jp/config/const.php
 ### 【課題2-1】テーブル定義(SQL)
 
 ## 注文履歴
-CREATE TABLE order_history (
-	id INT AUTO_INCREMENT,
-	user_id INT,
-	order_date DATETIME,
-	PRIMARY KEY (id)
+CREATE TABLE order_histories (
+	order_history_id INT AUTO_INCREMENT NOT NULL,
+	user_id INT NOT NULL,
+	order_datetime DATETIME NOT NULL,
+	PRIMARY KEY (order_history_id)
 	);
 
 ## 注文詳細
 CREATE TABLE order_details (
-	id INT AUTO_INCREMENT,
-	order_id INT,
-	item_id INT,
-	purchase_quantity INT DEFAULT 0,
-	PRIMARY KEY (id)
+	order_detail_id INT AUTO_INCREMENT NOT NULL,
+	order_hitsory_id INT NOT NULL,
+	item_id INT NOT NULL,
+	purchase_quantity INT NOT NULL,
+	PRIMARY KEY (order_detail_id)
 	);
 [dev.lesson-codecamp.jp:8080](http://dev.lesson-codecamp.jp:8080)
