@@ -4,25 +4,28 @@
  * @license https://creativecommons.org/licenses/by-nc-sa/4.0/deed.ja
  * @copyright CodeCamp https://codecamp.jp
  */
-require_once '../lib/config/const.php';
-
+// setting読み込み
+ require_once '../lib/config/const.php';
+// model読み込み
 require_once DIR_MODEL . 'function.php';
 require_once DIR_MODEL . 'cart.php';
 require_once DIR_MODEL . 'item.php';
 require_once DIR_MODEL . 'order.php';
 
 {
+	// セッション開始、または再開
 	session_start();
-
+	// $responseを配列宣言
 	$response = array();
+	// DBへ接続、PDOを$dbに代入
 	$db = db_connect();
-
+	// $SESSIONの['user]['id']に値が入っているかチェック
 	check_logined($db);
-
+	// カート内の処理を実行
 	__finish($db, $response);
-
+	// トークン発行
 	make_token();
-
+	// view読み込み
 	include_once DIR_VIEW . 'finish.php';
 }
 
@@ -31,12 +34,14 @@ require_once DIR_MODEL . 'order.php';
  * @param PDO $db
  * @param array $response
  */
+// finishメソッドを定義、$responseは参照渡し
 function __finish($db, &$response) {
+	// 値がPOSTでなければ、エラーメッセージを代入
 	if ($_SERVER['REQUEST_METHOD'] !== 'POST') {
 		$response['error_msg'] = 'リクエストが不適切です。';
 		return;
 	}
-
+	// トークンの一致をチェック、値がないか一致しなければエラーメッセージを代入
 	if (is_valid_token() === FALSE) {
 		$response['error_msg'] = 'リクエストが不適切です。';
 		return;
@@ -49,7 +54,7 @@ function __finish($db, &$response) {
 		return;
 	}
 	// $response['total_price'] = cart_total_price($db, $_SESSION['user']['id']);
-	$response['total_price'] = cart_sum($db, $response['cart_items']);
+	$response['total_price'] = cart_sum($response['cart_items']);
 
     $db->beginTransaction();
     try {
@@ -70,6 +75,6 @@ function __finish($db, &$response) {
     } catch (PDOException $e) {
         // ロールバック(処理取消)
         $db->rollback();
-        throw $e;
+        $response['error_msg'] = '購入処理が失敗しました: ' . $e->getMessage();
 	}
 }

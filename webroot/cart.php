@@ -24,7 +24,7 @@ require_once DIR_MODEL . 'cart.php';
 	if (empty($response['cart_items'])) {
 		$response['error_msg'] = 'カートに商品がありません。';
 	} else {
-		$response['total_price'] = cart_total_price($db, $_SESSION['user']['id']);
+		$response['total_price'] = cart_sum($response['cart_items']);
 	}
 
 	make_token();
