@@ -38,6 +38,14 @@ function cart_total_price($db, $user_id) {
 	return $row['total_price'];
 }
 
+function cart_sum($cart_items) {
+	$sum_price = 0;
+	foreach ($cart_items as $cart_item) {
+		$sum_price += $cart_item['price'] * $cart_item['amount'];
+	}
+	return $sum_price;
+}
+
 /**
  * @param PDO $db
  * @param int $user_id

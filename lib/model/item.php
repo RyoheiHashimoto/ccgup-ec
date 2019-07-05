@@ -89,7 +89,7 @@ function item_update_stock($db, $id, $stock) {
  * @param array $cart_items
  * @return boolean
  */
-function item_update_saled($db, $id, $amount) {
+function item_update_sold($db, $id, $amount) {
 	$sql = 
 	'UPDATE items
  	SET stock = stock - ?, update_date = NOW()
@@ -119,4 +119,10 @@ function item_update_status($db, $id, $status) {
  */
 function item_valid_status($status) {
 	return "0" === (string)$status || "1" === (string)$status;
+}
+
+function item_sold($db, $cart_items) {
+	foreach ($cart_items as $cart_item) {
+		item_update_sold($db, $cart_item['item_id'], $cart_item['amount']);
+	}
 }
