@@ -33,7 +33,7 @@ function order_detail_regist($db, $order_history_id, $item_id, $purchase_quantit
 // 該当ユーザーIDに紐づく注文履歴を取得
 function order_histories_select ($db, $user_id) {
     $sql =
-    'SELECT order_histories.user_id, order_datetime. order_datetime
+    'SELECT order_histories.user_id, order_histries.order_datetime
     FROM order_histories
     WHERE order_histories.user_id = ?;';
     $params = array($user_id);

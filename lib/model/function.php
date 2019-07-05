@@ -62,10 +62,7 @@ function db_select_one(PDO $db, $sql, $params = array()) {
  */
 function db_update(PDO $db, $sql, $params = array()) {
 	$stmt = $db->prepare($sql);
-
 	$result = $stmt->execute($params);
-	var_dump($sql);
-	var_dump($result);
 	return $result;
 }
 
