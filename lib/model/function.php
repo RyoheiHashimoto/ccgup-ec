@@ -17,7 +17,6 @@ function db_connect() {
 	} catch (PDOException $e) {
 		die('db error: ' . $e->getMessage());
 	}
-
 	return $db;
 }
 

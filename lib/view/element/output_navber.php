@@ -16,8 +16,8 @@
 		<div class="collapse navbar-collapse" id="mainNav">
 			<ul class="navbar-nav">
 				<li class="nav-item"><a class="text-white nav-link" href="./top.php">ホーム</a></li>
-				<li class="nav-item"><a class="text-white nav-link"
-					href="./cart.php">カート</a></li>
+				<li class="nav-item"><a class="text-white nav-link" href="./history.php">注文履歴</a></li>
+				<li class="nav-item"><a class="text-white nav-link"	href="./cart.php">カート</a></li>
 <?php if (empty($_SESSION['user'])) { ?>
 				<li class="nav-item"><a class="text-white nav-link"
 					href="./login.php">ログイン</a></li>
