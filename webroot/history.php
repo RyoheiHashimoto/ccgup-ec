@@ -21,7 +21,6 @@ require_once DIR_MODEL . 'order.php';
 	// __update($db, $response);
 	
 	$order_histories_list = order_histories_select($db, $_SESSION['user']['id']);
-    var_dump($order_histories_list);
 
 	if (empty($order_histories_list)) {
 		$response['error_msg'] = '購入履歴がありません。';

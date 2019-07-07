@@ -27,7 +27,6 @@
 		</div>
 
 <?php 
-var_dump($order_histories_list);
 include DIR_VIEW_ELEMENT . 'output_message.php'; ?>
 
 <?php if ( !empty($order_histories_list)) { ?>
