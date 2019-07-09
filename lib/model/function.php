@@ -14,6 +14,10 @@ function db_connect() {
 	try {
 		$db = new PDO($dsn, DB_USER, DB_PASS);
 		$db->exec("SET NAMES 'UTF8'");
+		// エラーモードの設定、例外を投げるようにする。
+		$db->setAttribute(PDO::ATTR_ERRMODE, PDO::ERRMODE_EXCEPTION);
+		// prepare機能がない場合エミュレート、今回は使わない(false)。
+		$db->setAttribute(PDO::ATTR_EMULATE_PREPARES, false);
 	} catch (PDOException $e) {
 		die('db error: ' . $e->getMessage());
 	}
@@ -57,8 +61,8 @@ function db_select_one(PDO $db, $sql, $params = array()) {
  */
 function db_update(PDO $db, $sql, $params = array()) {
 	$stmt = $db->prepare($sql);
-
-	return $stmt->execute($params);
+	$result = $stmt->execute($params);
+	return $result;
 }
 
 /**
