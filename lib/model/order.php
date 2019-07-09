@@ -30,9 +30,50 @@ function order_detail_regist($db, $order_history_id, $item_id, $purchase_quantit
 // 該当ユーザーIDに紐づく注文履歴を取得
 function order_histories_select ($db, $user_id) {
     $sql =
-    'SELECT order_histories.user_id, order_histories.order_datetime
+    'SELECT 
+        order_histories.order_history_id,
+        order_histories.order_datetime,
+        SUM(items.price * order_details.purchase_quantity) AS total_price
     FROM order_histories
-    WHERE order_histories.user_id = ?;';
+    INNER JOIN order_details
+        ON order_histories.order_history_id = order_details.order_history_id
+    INNER JOIN items
+        ON order_details.item_id = items.id
+    WHERE order_histories.user_id = ?
+    GROUP BY order_histories.order_history_id
+    ORDER BY order_datetime DESC;';
     $params = array($user_id);
     return db_select($db, $sql, $params);
+}
+
+// 購入明細を取得する関数(DB情報、注文履歴ID)
+function order_details_select ($db, $order_history_id) {
+    $sql =
+    'SELECT
+        items.name,
+        items.price,
+        order_details.purchase_quantity,
+        order_details.purchase_quantity * items.price AS subtotal
+    FROM order_details
+    INNER JOIN items
+        ON order_details.item_id = items.id
+    WHERE order_details.order_history_id = ?;';
+    $params = array($order_history_id);
+    return db_select($db, $sql, $params);
+}
+
+function select_order_history ($db, $order_history_id) {
+    $sql =
+    'SELECT
+        order_histories.order_datetime,
+        SUM(items.price * order_details.purchase_quantity) AS total_price
+    FROM order_histories
+    INNER JOIN order_details
+        ON order_histories.order_history_id = order_details.order_history_id
+    INNER JOIN items
+        ON order_details.item_id = items.id
+    WHERE order_histories.order_history_id = ?
+    GROUP BY order_histories.order_history_id;';
+    $params = array($order_history_id);
+    return db_select_one($db, $sql, $params);
 }

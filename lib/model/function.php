@@ -130,10 +130,12 @@ function check_logined($db) {
 	}
 }
 
+// XSS対策
 function h($str) {
 	return htmlspecialchars($str, ENT_QUOTES, 'UTF-8');
 }
 
+// トークン発行関数
 function make_token() {
 	// $tokenに乱数を含む一意のIDのハッシュ値を代入
 	$token = sha1(uniqid(mt_rand(), true));
@@ -141,6 +143,7 @@ function make_token() {
 	$_SESSION['token'] = $token;
 }
 
+// トークンチェック関数
 function is_valid_token() {
 	// $_POSTのtokenキーに値が無ければ
 	if (empty($_POST['token'])) {
@@ -154,4 +157,13 @@ function is_valid_token() {
 	}
 	// 上記に合致しなければtrueを返す
 	return $_SESSION['token'] === $_POST['token'];
+}
+
+// GETメソッドで変数がセットされていることをチェック
+// TRUEならば変数を返す、FALSEなら空文字
+function get_get_data($key) {
+	if (isset($_GET[$key]) === TRUE) {
+		return $_GET[$key];
+	}
+	return '';
 }
