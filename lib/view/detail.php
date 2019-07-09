@@ -13,49 +13,47 @@
 <title>購入履歴</title>
 <link href="./assets/bootstrap/dist/css/bootstrap.min.css" rel="stylesheet">
 <link rel="stylesheet" href="./assets/css/style.css">
-
 </head>
 <body>
-<?php include DIR_VIEW_ELEMENT . 'output_navber.php'; ?>
-
 	<div class="container-fluid px-md-3">
 		<div class="row">
 			<div class="col-12">
-				<h1>注文履歴</h1>
+                <h1>購入明細</h1>
 			</div>
 		</div>
-
 <?php 
 include DIR_VIEW_ELEMENT . 'output_message.php'; ?>
-<?php if ( !empty($order_histories_list)) { ?>
+<?php if ( !empty($order_details_list)) { ?>
 		<div class="col-xs-12 col-md-10 offset-md-1 cart-list">
 			<div class="row">
 				<table class="table">
 					<thead>
+                    <span>No.<?php echo h($order_history_id); ?>-</span>
+                    <span><?php echo h($order_history_data['order_datetime']); ?></span>
 						<tr>
-							<th></th>
-							<th>購入日時</th>
-							<th>合計金額</th>
-							<th></th>
+							<th>商品名</th>
+							<th>商品価格</th>
+							<th>購入個数</th>
+							<th>小計</th>
 						</tr>
 					</thead>
 					<tbody>
-<?php foreach ($order_histories_list as $key => $value) {?>
+<?php foreach ($order_details_list as $key => $value) {?>
 						<tr class="<?php echo h((0 === ($key % 2)) ? 'stripe' : '' ); ?>">
-							<td>No.<?php echo h($value['order_history_id']);?></td>
-							<td><?php echo h($value['order_datetime']);?></td>
-							<td><?php echo h($value['total_price']);?>円</td>
-							<td>
-								<form action="detail.php" method="get">
-									<button type=“submit” class="btn btn-info btn-sm">購入明細</button>
-									<input type="hidden" name="order_history_id" value="<?php echo h($value['order_history_id']); ?>">
-								</form>
-							</td>
+							<td><?php echo h($value['name']);?></td>
+							<td><?php echo h($value['price']);?></td>
+							<td><?php echo h($value['purchase_quantity']);?></td>
+							<td><?php echo h($value['subtotal']);?>円</td>
 <?php } ?>
+                    </tbody>
+                    <tfoot>
 						<tr>
-							<td colspan="4"></td>
+                            <td></td>
+                            <td></td>
+                            <td></td>
+							<td>合計<?php echo h($order_history_data['total_price']); ?>円</td>
 						</tr>
-					</tbody>
+					</tfoot>
 				</table>
 			</div>
 		</div>
