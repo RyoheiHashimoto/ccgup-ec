@@ -42,13 +42,24 @@ function item_delete($db, $id) {
  * @param PDO $db
  * @return array
  */
-function item_list($db, $is_active_only = true) {
+// 第三引数$sortのデフォルト値を空文字とする
+// GETで何も渡されていない場合は空文字となるので最新順がデフォルトとなる
+function item_list($db, $is_active_only = true, $sort = '') {
 	$sql =
 	'SELECT id, name, price, img, stock, status, create_date, update_date
 	FROM items';
 
 	if ($is_active_only) {
 		$sql .= ' WHERE status = 1';
+	}
+	if ($sort === '') {
+		$sql .= ' ORDER BY create_date DESC';
+	}
+	if ($sort === '1') {
+		$sql .= ' ORDER BY price ASC';
+	}
+	if ($sort === '2') {
+		$sql .= ' ORDER BY price DESC';
 	}
 
 	return db_select($db, $sql);
@@ -126,3 +137,9 @@ function item_sold($db, $cart_items) {
 		item_update_sold($db, $cart_item['item_id'], $cart_item['amount']);
 	}
 }
+
+function item_sort($db, $item_list) {
+	if ($category !== '0') {
+		$sql = $sql.'  = ' . $category;
+	}
+} 

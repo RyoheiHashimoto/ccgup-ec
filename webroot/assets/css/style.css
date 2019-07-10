@@ -32,3 +32,20 @@ body {
 .cart-list tr.disable {
 	background-color: #A9A9A9;
 }
+
+.top-left-right {
+	display: flex;
+}
+
+.top-left {
+	flex: 1;
+}
+
+.top-right {
+	flex: 1;
+	text-align: right;
+}
+
+caption {
+	caption-side: top;
+}

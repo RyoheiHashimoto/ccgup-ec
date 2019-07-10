@@ -26,10 +26,11 @@ include DIR_VIEW_ELEMENT . 'output_message.php'; ?>
 <?php if ( !empty($order_details_list)) { ?>
 		<div class="col-xs-12 col-md-10 offset-md-1 cart-list">
 			<div class="row">
-				<table class="table">
+				<table class="table">	
+					<caption>
+						No.<?php echo h($order_history_id); ?>-<?php echo h($order_history_data['order_datetime']); ?>
+					</caption>
 					<thead>
-                    <span>No.<?php echo h($order_history_id); ?>-</span>
-                    <span><?php echo h($order_history_data['order_datetime']); ?></span>
 						<tr>
 							<th>商品名</th>
 							<th>商品価格</th>

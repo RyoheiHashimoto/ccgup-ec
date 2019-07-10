@@ -11,13 +11,19 @@ require_once DIR_MODEL . 'cart.php';
 require_once DIR_MODEL . 'item.php';
 
 {
+	// セッション開始・再開
 	session_start();
-
+	// DB接続、DB情報を変数に代入
 	$db = db_connect();
+	// 配列宣言
 	$response = array();
-
+	// カート投入処理
 	__regist($db, $response);
-	$response['items'] = item_list($db);
+	// GETで送信されてきたvalueを変数に代入
+	$sort = get_get_data('sort');
+	// DBより商品一覧テーブルを取得し配列に代入
+	// 
+	$response['items'] = item_list($db, true, $sort);
 
 	make_token();
 
