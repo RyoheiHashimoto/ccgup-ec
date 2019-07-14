@@ -61,8 +61,8 @@
 							</td>
 							<td><?php echo h(number_format($value['price'])); ?>円</td>
 							<td>
-								<form id="form_select_amount<?php echo h($value['id']); ?>" action="<?php echo h($_SERVER['SCRIPT_NAME']); ?>" method="post">
-									<select name="amount" onchange="submit_change_amount(<?php echo h($value['id']); ?>)">
+								<form action="<?php echo h($_SERVER['SCRIPT_NAME']); ?>" method="post">
+									<select class="amount_select" name="amount">
 <?php $max_count = 10; if ((int)$value['amount'] > $max_count){$max_count = (int)$value['amount'];}; ?>
 <?php for ($count = 1; $count <= $max_count; $count++)  { ?>
 										<option value="<?php echo h($count); ?>"
@@ -107,10 +107,15 @@
 	<script src="./assets/js/jquery/1.12.4/jquery.min.js"></script>
 	<script src="./assets/bootstrap/dist/js/bootstrap.min.js"></script>
 	<script type="text/javascript">
-		function submit_change_amount(id) {
-			document.getElementById('form_select_amount' + id).submit();
-		}
+		// function submit_change_amount(id) {
+		// 	document.getElementById('form_select_amount' + id).submit();
+		// }
+		// selectが変更されたときにonchange実行
+		// 指定したフォームをsubmit
+		// onchange="submit_change_amount(<?php echo h($value['id']); ?>)"
+		$('.amount_select').on('change', function(){
+			$(this).parent().submit();
+		});
 	</script>
-
 </body>
 </html>

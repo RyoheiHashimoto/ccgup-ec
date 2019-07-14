@@ -23,12 +23,11 @@
 			</div>
 			<div class="top-right">
 				<form method="get" action="top.php">
-					<select name="sort">
-						<option value="" selected>最新商品</option>
-						<option value="1" >価格の安い順</option>
-						<option value="2" >価格の高い順</option>
+					<select class="item_sort" name="sort">
+						<option value="" <?php if ($sort === '') {echo 'selected';} ?>>最新商品</option>
+						<option value="1" <?php if ($sort === '1') {echo 'selected';} ?>>価格の安い順</option>
+						<option value="2" <?php if ($sort === '2') {echo 'selected';} ?>>価格の高い順</option>
 					</select>
-					<button type=“submit” class="btn btn-dark btn-sm">並び替え</button>
 				</form>
 			</div>
 		</div>
@@ -60,5 +59,13 @@
 	<!-- /.container -->
 	<script src="./assets/js/jquery/1.12.4/jquery.min.js"></script>
 	<script src="./assets/bootstrap/dist/js/bootstrap.min.js"></script>
+	<script type="text/javascript">
+		// $('.item_sort').on('change', function(){
+		// 	$(this).parent().submit();
+		// });
+		$('.item_sort').on('change', function(){
+			$(this).parents('form').submit();
+		});
+	</script>
 </body>
 </html>

@@ -137,9 +137,3 @@ function item_sold($db, $cart_items) {
 		item_update_sold($db, $cart_item['item_id'], $cart_item['amount']);
 	}
 }
-
-function item_sort($db, $item_list) {
-	if ($category !== '0') {
-		$sql = $sql.'  = ' . $category;
-	}
-} 
