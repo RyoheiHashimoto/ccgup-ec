@@ -11,17 +11,24 @@
 <meta charset="utf-8">
 <meta name="viewport" content="width=device-width, initial-scale=1">
 <title>商品一覧</title>
-<link href="./assets/bootstrap/dist/css/bootstrap.min.css"
-	rel="stylesheet">
+<link href="./assets/bootstrap/dist/css/bootstrap.min.css" rel="stylesheet">
 <link rel="stylesheet" href="./assets/css/style.css">
-
 </head>
 <body>
 <?php include DIR_VIEW_ELEMENT . 'output_navber.php'; ?>
 	<div class="container-fluid px-md-5">
-		<div class="row">
-			<div class="col-12">
+		<div class="top-left-right">
+			<div class="top-left">
 				<h1>商品一覧</h1>
+			</div>
+			<div class="top-right">
+				<form method="get" action="top.php">
+					<select class="item_sort" name="sort">
+						<option value="" <?php if ($sort === '') {echo 'selected';} ?>>最新商品</option>
+						<option value="1" <?php if ($sort === '1') {echo 'selected';} ?>>価格の安い順</option>
+						<option value="2" <?php if ($sort === '2') {echo 'selected';} ?>>価格の高い順</option>
+					</select>
+				</form>
 			</div>
 		</div>
 <?php include DIR_VIEW_ELEMENT . 'output_message.php'; ?>
@@ -52,5 +59,13 @@
 	<!-- /.container -->
 	<script src="./assets/js/jquery/1.12.4/jquery.min.js"></script>
 	<script src="./assets/bootstrap/dist/js/bootstrap.min.js"></script>
+	<script type="text/javascript">
+		// $('.item_sort').on('change', function(){
+		// 	$(this).parent().submit();
+		// });
+		$('.item_sort').on('change', function(){
+			$(this).parents('form').submit();
+		});
+	</script>
 </body>
 </html>

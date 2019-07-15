@@ -45,9 +45,9 @@ $workspace/ccg/syncs/www/dev.lesson-codecamp.jp/config/const.php
 
 `環境準備方法` が終わりましたら、下記にアクセスして接続確認をしましょう。
 
-### 【課題2-1】テーブル定義(SQL)
+## 【課題2-1】テーブル定義(SQL)
 
-## 注文履歴
+### 注文履歴
 CREATE TABLE order_histories (
 	order_history_id INT AUTO_INCREMENT NOT NULL,
 	user_id INT NOT NULL,
@@ -55,12 +55,55 @@ CREATE TABLE order_histories (
 	PRIMARY KEY (order_history_id)
 	);
 
-## 注文詳細
+### 注文詳細
 CREATE TABLE order_details (
 	order_detail_id INT AUTO_INCREMENT NOT NULL,
-	order_hitsory_id INT NOT NULL,
+	order_history_id INT NOT NULL,
 	item_id INT NOT NULL,
 	purchase_quantity INT NOT NULL,
 	PRIMARY KEY (order_detail_id)
 	);
+
+## ※外部キー既存テーブルに後から追加ver
+
+ALTER TABLE order_details
+	ADD FOREIGN KEY (order_history_id)
+	REFERENCES order_histories(order_history_id);
+
+ALTER TABLE order_details ADD
+	FOREIGN KEY (item_id)
+	REFERENCES items(id);
+	
+
+## ※外部キー作成時に追加ver
+
+### 注文履歴
+CREATE TABLE order_histories (
+	order_history_id INT AUTO_INCREMENT NOT NULL,
+	user_id INT NOT NULL,
+	order_datetime DATETIME NOT NULL,
+	PRIMARY KEY (order_history_id)
+	);
+
+### 注文詳細
+CREATE TABLE order_details (
+	order_detail_id INT AUTO_INCREMENT NOT NULL,
+	order_history_id INT NOT NULL,
+	item_id INT NOT NULL,
+	purchase_quantity INT NOT NULL,
+	PRIMARY KEY (order_detail_id),
+	FOREIGN KEY (order_history_id)
+		REFERENCES order_histories(order_history_id),
+	FOREIGN KEY (item_id)
+		REFERENCES items(id)
+	);
+
+## user_idを紐付ける
+ALTER TABLE order_histories
+	ADD FOREIGN KEY (user_id)
+	REFERENCES users(id)
+	ON DELETE RESTRICT
+	ON UPDATE RESTRICT;
+
+
 [dev.lesson-codecamp.jp:8080](http://dev.lesson-codecamp.jp:8080)
