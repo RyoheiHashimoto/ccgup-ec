@@ -45,6 +45,11 @@ $workspace/ccg/syncs/www/dev.lesson-codecamp.jp/config/const.php
 
 `環境準備方法` が終わりましたら、下記にアクセスして接続確認をしましょう。
 
+## 関数名のルールについて
+
+contoroller内で直接定義している関数は、関数名の頭に __ が付きます。
+model内で定義している関数と区別をするためです。
+
 ## 【課題2-1】テーブル定義(SQL)
 
 ### 注文履歴
@@ -104,6 +109,5 @@ ALTER TABLE order_histories
 	REFERENCES users(id)
 	ON DELETE RESTRICT
 	ON UPDATE RESTRICT;
-
 
 [dev.lesson-codecamp.jp:8080](http://dev.lesson-codecamp.jp:8080)
