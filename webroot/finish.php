@@ -11,70 +11,79 @@ require_once DIR_MODEL . 'function.php';
 require_once DIR_MODEL . 'cart.php';
 require_once DIR_MODEL . 'item.php';
 require_once DIR_MODEL . 'order.php';
+require_once DIR_MODEL . 'user.php';
 
 {
 	// セッション開始、または再開
 	session_start();
-	// $responseを配列宣言
-	$response = array();
-	// DBへ接続、PDOを$dbに代入
-	$db = db_connect();
-	// $SESSIONの['user]['id']に値が入っているかチェック
-	check_logined($db);
-	// カート内の処理を実行
-	__finish($db, $response);
+	// DBへ接続、ハンドルを代入
+	$db = connect_to_db();
+	// ログインチェック
+	check_logged_in($db);
+	// POSTとトークンをチェック
+	$msg = __check_post_and_token();
+	// カート内商品を取得
+	$cart_items = __get_cart_list($db, $msg, $_SESSION['user']['user_id']);
+	// 商品の有無を確認
+	$msg = check_existing($cart_items, 'カート内の商品');
+	// 合計金額を算出
+	$total_price = __sum_cart($msg, $cart_items);
+	// 購入処理
+	$msg = __finish($db, $cart_items);
 	// トークン発行
 	make_token();
 	// view読み込み
 	include_once DIR_VIEW . 'finish.php';
 }
 
-
-/**
- * @param PDO $db
- * @param array $response
- */
-// finishメソッドを定義、$responseは参照渡し
-function __finish($db, &$response) {
-	// 値がPOSTでなければ、エラーメッセージを代入
-	if ($_SERVER['REQUEST_METHOD'] !== 'POST') {
-		$response['error_msg'] = 'リクエストが不適切です。';
-		return;
+function __check_post_and_token() {
+	// POSTメソッドであることとをチェック
+	if (is_post() === FALSE) {
+		return ['err_msg' => 'リクエストが不適切です。'];
 	}
-	// トークンの一致をチェック、値がないか一致しなければエラーメッセージを代入
+	// トークンをチェック
 	if (is_valid_token() === FALSE) {
-		$response['error_msg'] = 'リクエストが不適切です。';
-		return;
+		return ['err_msg' => 'リクエストが不適切です。'];
 	}
-	// cart_list関数でカート内の商品を参照し、$response['cart_items']に代入
-	$response['cart_items'] = cart_list($db, $_SESSION['user']['id']);
-	// カートの中身が空かチェック
-	if (empty($response['cart_items'])) {
-		$response['error_msg'] = 'カートに商品がありません。';
-		return;
-	}
-	// $response['total_price'] = cart_total_price($db, $_SESSION['user']['id']);
-	$response['total_price'] = cart_sum($response['cart_items']);
+}
 
-    $db->beginTransaction();
-    try {
-        // 在庫を減らす処理
-        item_sold($db, $response['cart_items']);
-        // 購入履歴を追加(購入履歴テーブルに追加)
-        order_history_regist($db, $_SESSION['user']['id']);
-        // history_idを取得
-        $order_history_id = $db->lastInsertId();
-        // 購入明細を追加
-        order_details_regist($db, $order_history_id, $response['cart_items']);
-        // カートから商品を削除する処理
-        cart_clear($db, $_SESSION['user']['id']);
-        // コミット(処理確定)
-        $db->commit();
-        // 完了メッセージを代入
-        $response['result_msg'] = 'ご購入、ありがとうございました。';
-    } catch (PDOException $e) {
-        // ロールバック(処理取消)
-        $db->rollback();
-        $response['error_msg'] = '購入処理が失敗しました: ' . $e->getMessage();
+function __get_cart_list($db, $msg, $user_id) {
+	if (!empty($msg)) {
+		return;
+	}
+	return get_cart_list($db, $user_id);
+}
+
+function __sum_cart($msg, $cart_items) {
+	if (!empty($msg)) {
+		return;
+	}
+	return sum_cart($cart_items);
+}
+
+function __finish($db, $cart_items) {
+	// トランザクション開始
+	$db->beginTransaction();
+
+	try {
+		// 在庫を減らす処理
+		reduce_item_stock($db, $cart_items);
+		// 購入履歴を追加(購入履歴テーブルに追加)
+		register_order_history($db, $_SESSION['user']['user_id']);
+		// history_idを取得
+		$order_history_id = $db->lastInsertId();
+		// 購入明細を追加
+		register_order_details($db, $order_history_id, $cart_items);
+		// ユーザーのカート内商品を削除する処理
+		clear_user_carts($db, $_SESSION['user']['user_id']);
+		// コミット(処理確定)
+		$db->commit();
+		// 完了メッセージを代入
+		return ['result_msg' => 'ご購入、ありがとうございました。'];
+		
+	} catch (PDOException $e) {
+		// ロールバック(処理取消)
+		$db->rollback();
+		return ['err_msg' => '購入処理が失敗しました: ' . $e->getMessage()];
 	}
 }

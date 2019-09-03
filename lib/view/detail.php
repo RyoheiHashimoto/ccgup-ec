@@ -15,6 +15,7 @@
 <link rel="stylesheet" href="./assets/css/style.css">
 </head>
 <body>
+<?php include DIR_VIEW_ELEMENT . 'output_navber.php'; ?>
 	<div class="container-fluid px-md-3">
 		<div class="row">
 			<div class="col-12">
@@ -23,12 +24,12 @@
 		</div>
 <?php 
 include DIR_VIEW_ELEMENT . 'output_message.php'; ?>
-<?php if ( !empty($order_details_list)) { ?>
+<?php if (!empty($order_details)) { ?>
 		<div class="col-xs-12 col-md-10 offset-md-1 cart-list">
 			<div class="row">
 				<table class="table">	
 					<caption>
-						No.<?php echo h($order_history_id); ?>-<?php echo h($order_history_data['order_datetime']); ?>
+						No.<?php echo h($order_history_id); ?>-<?php echo h($order_history['order_datetime']); ?>
 					</caption>
 					<thead>
 						<tr>
@@ -39,12 +40,12 @@ include DIR_VIEW_ELEMENT . 'output_message.php'; ?>
 						</tr>
 					</thead>
 					<tbody>
-<?php foreach ($order_details_list as $key => $value) {?>
-						<tr class="<?php echo h((0 === ($key % 2)) ? 'stripe' : '' ); ?>">
-							<td><?php echo h($value['name']);?></td>
-							<td><?php echo h($value['price']);?></td>
-							<td><?php echo h($value['purchase_quantity']);?></td>
-							<td><?php echo h($value['subtotal']);?>円</td>
+<?php foreach ($order_details as $detail_section => $order_detail) {?>
+						<tr class="<?php echo h((is_even_number_section($detail_section) === TRUE) ? 'stripe' : '' ); ?>">
+							<td><?php echo h($order_detail['item_name']);?></td>
+							<td><?php echo h($order_detail['item_price']);?></td>
+							<td><?php echo h($order_detail['purchase_quantity']);?></td>
+							<td><?php echo h($order_detail['subtotal']);?>円</td>
 <?php } ?>
                     </tbody>
                     <tfoot>
@@ -52,7 +53,7 @@ include DIR_VIEW_ELEMENT . 'output_message.php'; ?>
                             <td></td>
                             <td></td>
                             <td></td>
-							<td>合計<?php echo h($order_history_data['total_price']); ?>円</td>
+							<td>合計<?php echo h($order_history['total_price']); ?>円</td>
 						</tr>
 					</tfoot>
 				</table>
@@ -63,11 +64,5 @@ include DIR_VIEW_ELEMENT . 'output_message.php'; ?>
 	<!-- /.container -->
 	<script src="./assets/js/jquery/1.12.4/jquery.min.js"></script>
 	<script src="./assets/bootstrap/dist/js/bootstrap.min.js"></script>
-	<script type="text/javascript">
-		function submit_change_amount(id) {
-			document.getElementById('form_select_amount' + id).submit();
-		}
-	</script>
-
 </body>
 </html>

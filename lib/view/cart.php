@@ -27,8 +27,7 @@
 		</div>
 
 <?php include DIR_VIEW_ELEMENT . 'output_message.php'; ?>
-
-<?php if ( !empty($response['cart_items'])) { ?>
+<?php if (!empty($cart_items)) { ?>
 		<div class="col-xs-12 col-md-10 offset-md-1 cart-list">
 			<div class="row">
 				<table class="table">
@@ -44,34 +43,39 @@
 						</tr>
 					</thead>
 					<tbody>
-<?php foreach ( $response['cart_items'] as $key => $value ) {?>
-						<tr class="<?php echo h((0 === ($key % 2)) ? 'stripe' : '' ); ?>">
-							<td rowspan="2"><img class="w-100"
-								src="<?php echo h(DIR_IMG . $value['img']); ?>"></td>
-							<td colspan="3"><?php echo h($value['name']);?></td>
+<?php foreach ($cart_items as $cart_section => $cart_item) {?>
+						<tr class="<?php echo h((is_even_number_section($cart_section) === TRUE) ? 'stripe' : '' ); ?>">
+							<td rowspan="2">
+								<img class="w-100" src="<?php echo h(DIR_IMG . $cart_item['item_img']); ?>">
+							</td>
+							<td colspan="3">
+								<?php echo h($cart_item['item_name']);?>
+							</td>
 						</tr>
-						<tr class="<?php echo h((0 === ($key % 2)) ? 'stripe' : '' ); ?>">
+						<tr class="<?php echo h((is_even_number_section($cart_section) === TRUE) ? 'stripe' : '' ); ?>">
 							<td>
 								<form action="<?php echo h($_SERVER['SCRIPT_NAME']); ?>" method="post">
 									<button type="submit" class="btn btn-danger btn-sm">削除</button>
 									<input type="hidden" name="token" value="<?php echo $_SESSION['token']; ?>">
-									<input type="hidden" name="id" value="<?php echo h($value['id']); ?>">
-									<input type="hidden" name="action" value="delete">
+									<input type="hidden" name="cart_id" value="<?php echo h($cart_item['cart_id']); ?>">
+									<input type="hidden" name="action" value="delete_cart">
 								</form>
 							</td>
-							<td><?php echo h(number_format($value['price'])); ?>円</td>
+							<td><?php echo h(number_format($cart_item['item_price'])); ?>円</td>
 							<td>
 								<form action="<?php echo h($_SERVER['SCRIPT_NAME']); ?>" method="post">
-									<select class="amount_select" name="amount">
-<?php $max_count = 10; if ((int)$value['amount'] > $max_count){$max_count = (int)$value['amount'];}; ?>
-<?php for ($count = 1; $count <= $max_count; $count++)  { ?>
+									<select class="amount_select" name="cart_amount">
+<?php $max_count = SELECTABLE_CART_AMOUNT_MAX; if ((int)$cart_item['cart_amount'] > $max_count){$max_count = (int)$cart_item['cart_amount'];}; ?>
+<?php for ($count = SELECTABLE_CART_AMOUNT_MIN; $count <= $max_count; $count++)  { ?>
 										<option value="<?php echo h($count); ?>"
-											<?php if ((int)$value['amount'] === $count){echo 'selected';}; ?>><?php echo h($count);?></option>
+											<?php if ((int)$cart_item['cart_amount'] === $count){echo 'selected';}; ?>>
+											<?php echo h($count);?>
+										</option>
 <?php } ?>
 									</select>
 									<input type="hidden" name="token" value="<?php echo $_SESSION['token']; ?>">
-									<input type="hidden" name="id" value="<?php echo h($value['id']); ?>">
-									<input type="hidden" name="action" value="update">
+									<input type="hidden" name="cart_id" value="<?php echo h($cart_item['cart_id']); ?>">
+									<input type="hidden" name="action" value="update_cart">
 								</form>
 							</td>
 						</tr>
@@ -83,7 +87,8 @@
 							<td></td>
 							<td colspan="2">
 								<div>
-									<span>合計</span> <span><?php echo h(number_format($response['total_price'])); ?>円</span>
+									<span>合計</span>
+									<span><?php echo h(number_format($total_price)); ?>円</span>
 								</div>
 							</td>
 						</tr>
@@ -107,14 +112,10 @@
 	<script src="./assets/js/jquery/1.12.4/jquery.min.js"></script>
 	<script src="./assets/bootstrap/dist/js/bootstrap.min.js"></script>
 	<script type="text/javascript">
-		// function submit_change_amount(id) {
-		// 	document.getElementById('form_select_amount' + id).submit();
-		// }
 		// selectが変更されたときにonchange実行
 		// 指定したフォームをsubmit
-		// onchange="submit_change_amount(<?php echo h($value['id']); ?>)"
 		$('.amount_select').on('change', function(){
-			$(this).parent().submit();
+			$(this).parents('form').submit();
 		});
 	</script>
 </body>

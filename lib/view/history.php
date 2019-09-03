@@ -27,7 +27,7 @@
 
 <?php 
 include DIR_VIEW_ELEMENT . 'output_message.php'; ?>
-<?php if ( !empty($order_histories_list)) { ?>
+<?php if (!empty($order_histories)) { ?>
 		<div class="col-xs-12 col-md-10 offset-md-1 cart-list">
 			<div class="row">
 				<table class="table">
@@ -40,15 +40,15 @@ include DIR_VIEW_ELEMENT . 'output_message.php'; ?>
 						</tr>
 					</thead>
 					<tbody>
-<?php foreach ($order_histories_list as $key => $value) {?>
-						<tr class="<?php echo h((0 === ($key % 2)) ? 'stripe' : '' ); ?>">
-							<td>No.<?php echo h($value['order_history_id']);?></td>
-							<td><?php echo h($value['order_datetime']);?></td>
-							<td><?php echo h($value['total_price']);?>円</td>
+<?php foreach ($order_histories as $history_section => $order_history) {?>
+						<tr class="<?php echo h((is_even_number_section($history_section) === TRUE) ? 'stripe' : '' ); ?>">
+							<td>No.<?php echo h($order_history['order_history_id']);?></td>
+							<td><?php echo h($order_history['order_datetime']);?></td>
+							<td><?php echo h($order_history['total_price']);?>円</td>
 							<td>
 								<form action="detail.php" method="get">
 									<button type=“submit” class="btn btn-info btn-sm">購入明細</button>
-									<input type="hidden" name="order_history_id" value="<?php echo h($value['order_history_id']); ?>">
+									<input type="hidden" name="order_history_id" value="<?php echo h($order_history['order_history_id']); ?>">
 								</form>
 							</td>
 <?php } ?>
@@ -64,11 +64,5 @@ include DIR_VIEW_ELEMENT . 'output_message.php'; ?>
 	<!-- /.container -->
 	<script src="./assets/js/jquery/1.12.4/jquery.min.js"></script>
 	<script src="./assets/bootstrap/dist/js/bootstrap.min.js"></script>
-	<script type="text/javascript">
-		function submit_change_amount(id) {
-			document.getElementById('form_select_amount' + id).submit();
-		}
-	</script>
-
 </body>
 </html>

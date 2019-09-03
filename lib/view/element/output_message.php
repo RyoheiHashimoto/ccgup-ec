@@ -5,22 +5,22 @@
  * @copyright CodeCamp https://codecamp.jp
  */
 ?>
-<?php if (empty($response['result_msg']) !== TRUE) { ?>
+<?php if (empty($msg['result_msg']) !== TRUE) { ?>
 <div class="row">
 	<div class="col-12 alert alert-success" role="alert">
-		<?php echo h($response['result_msg']); ?>
+		<?php echo h($msg['result_msg']); ?>
 	</div>
 </div>
 <?php } ?>
 
-<?php if (empty($response['error_msg']) !== TRUE) { ?>
+<?php if (empty($msg['err_msg']) !== TRUE) { ?>
 <div class="row">
 	<div class="col-12 alert alert-danger" role="alert">
 <?php
-	if (is_array($response['error_msg'])) {
-		echo h(implode('<br>', $response['error_msg']));
+	if (is_array($msg['err_msg'])) {
+		echo h(implode("\n", $msg['err_msg']));
 	} else {
-		echo h($response['error_msg']);
+		echo h($msg['err_msg']);
 	}
 	?>
 	</div>

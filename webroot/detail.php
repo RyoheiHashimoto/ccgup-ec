@@ -8,6 +8,7 @@ require_once '../lib/config/const.php';
 
 require_once DIR_MODEL . 'function.php';
 require_once DIR_MODEL . 'order.php';
+require_once DIR_MODEL . 'user.php';
 
 {
 	// セッション開始
@@ -15,19 +16,17 @@ require_once DIR_MODEL . 'order.php';
 	// 購入明細リストを配列宣言
 	$order_details_list = array();
 	// DB接続
-	$db = db_connect();
+	$db = connect_to_db();
 	// ログインチェック
-    check_logined($db);
+    check_logged_in($db);
     // GETで送信されてきたidを代入
     $order_history_id = get_get_data('order_history_id');
     // 注文履歴データをDBより取得、変数に代入
-    $order_history_data = select_order_history($db, $order_history_id);
+    $order_history = get_order_history($db, $order_history_id);
 	// 購入明細リストをDBより取得、変数に代入
-	$order_details_list = order_details_select($db, $order_history_id);
-	// リストより注文ごとの合計金額を算出
-	if (empty($order_details_list)) {
-		$response['error_msg'] = '購入明細がありません。';
-	}
-
+	$order_details = get_order_details($db, $order_history_id);
+	// 購入明細が存在するか確認
+	$msg = check_existing($order_details, '購入明細');
+	// view読み込み
 	include_once DIR_VIEW . 'detail.php';
 }
