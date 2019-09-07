@@ -14,7 +14,7 @@
 <meta name="description" content="">
 <meta name="author" content="">
 
-<title>ログイン：CodeCamp講師</title>
+<title>ログイン</title>
 
 <!-- Bootstrap core CSS -->
 <link href="./assets/bootstrap/dist/css/bootstrap.min.css" rel="stylesheet">
