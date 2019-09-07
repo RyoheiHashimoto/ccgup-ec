@@ -5,116 +5,126 @@
  * @copyright CodeCamp https://codecamp.jp
  */
 
-/**
- * @param PDO $db
- * @param int $user_id
- * @param int $item_id
- * @return boolean
- */
-function cart_is_exists_item($db, $user_id, $item_id) {
-	$sql = <<<EOD
-SELECT item_id, amount FROM carts
- WHERE user_id = {$user_id} AND item_id = {$item_id}
-EOD;
-
-	$cart = db_select($db, $sql);
-	return empty($cart) === false;
+// カートに既に登録されているか確認
+function is_registered_with_carts($db, $user_id, $item_id) {
+	$sql =
+	'SELECT
+		item_id,
+		cart_amount
+	FROM
+		carts
+	WHERE
+		user_id = ?
+		AND item_id = ?;';
+	$params = array($user_id, $item_id);
+	$cart_items = get_rows($db, $sql, $params);
+	return empty($cart_items) === FALSE;
 }
 
-/**
- * @param PDO $db
- * @param int $user_id
- * @return int | NULL
- */
-function cart_total_price($db, $user_id) {
-	$sql = <<<EOD
-SELECT sum(price * amount) as total_price
- FROM carts JOIN items
- ON carts.item_id = items.id
- WHERE items.status = 1 AND user_id = {$user_id}
-EOD;
-	$row = db_select_one($db, $sql);
-	if (empty($row)) {
-		return null;
-	}
-	return $row['total_price'];
+// ユーザ毎のカート内商品を参照
+function get_cart_list($db, $user_id) {
+	$sql =
+	'SELECT
+		carts.
+		item_id,
+		item_name,
+		item_price,
+		item_img,
+		item_stock,
+		cart_id,
+		cart_amount
+ 	FROM
+	 	carts
+	JOIN
+		items
+ 	ON
+	 	carts.item_id = items.item_id
+	WHERE
+		items.item_status = 1
+		AND	user_id = ?;';
+	$params = array($user_id); 
+	return get_rows($db, $sql, $params);
 }
 
-/**
- * @param PDO $db
- * @param int $user_id
- * @return array
- */
-function cart_list($db, $user_id) {
-	$sql = <<<EOD
- SELECT carts.id, item_id, name, price, img, amount, (price * amount) as amount_price
- FROM carts JOIN items
- ON carts.item_id = items.id
- WHERE items.status = 1 AND user_id = {$user_id}
-EOD;
-	return db_select($db, $sql);
-}
-
-/**
- * @param PDO $db
- * @param int $user_id
- * @param int $item_id
- * @return int
- */
-function cart_regist($db, $user_id, $item_id) {
+// カートの1レコード
+// add_cart
+// 今後の実装によってはプラス1ずつとは限らない
+// update_cart_amountをそのまま利用したほうが早い
+// 一行取得→0ならば新規追加　1ならば更新
+function register_cart($db, $user_id, $item_id) {
 	$sql = '';
 
-	if (cart_is_exists_item($db, $user_id, $item_id)) {
-		$sql = <<<EOD
-UPDATE carts
- SET amount = amount + 1 , update_date = NOW()
- WHERE user_id = {$user_id} AND item_id = {$item_id}
-EOD;
+	if (is_registered_with_carts($db, $user_id, $item_id)) {
+		$sql =
+		'UPDATE
+			carts
+ 		SET
+		 	cart_amount = cart_amount + 1 ,
+			cart_update_datetime = NOW()
+ 		WHERE
+		 	user_id = ?
+		AND
+			item_id = ?;';
 	} else {
-		$sql = <<<EOD
-INSERT INTO carts (user_id, item_id, amount, create_date, update_date)
-VALUES ({$user_id}, {$item_id}, 1, NOW(), NOW())
-EOD;
+		$sql =
+		'INSERT
+		INTO carts(
+			user_id,
+			item_id,
+			cart_amount,
+			cart_create_datetime,
+			cart_update_datetime
+		)
+		VALUES
+			(?, ?, 1, NOW(), NOW());';
 	}
-	return db_update($db, $sql);
+	$params = array($user_id, $item_id);
+	return update_db($db, $sql, $params);
 }
 
-/**
- * @param PDO $db
- * @param int $id
- * @param int $user_id
- * @param int $amount
- * @return int
- */
-function cart_update($db, $id, $user_id, $amount) {
-	$sql = <<<EOD
-UPDATE carts
- SET amount = {$amount}, update_date = NOW()
- WHERE id = {$id} AND user_id = {$user_id}
-EOD;
-	return db_update($db, $sql);
+// カート内商品数量を更新
+function update_cart_amount($db, $cart_id, $cart_amount) {
+	$sql =
+	'UPDATE
+		carts
+ 	SET
+	 	cart_amount = ?,
+		cart_update_datetime = NOW()
+ 	WHERE
+	 	cart_id = ?;';
+	$params = array($cart_amount, $cart_id);
+	return update_db($db, $sql, $params);
 }
 
-/**
- * @param PDO $db
- * @param int $id
- * @param int $user_id
- * @return int
- */
-function cart_delete($db, $id, $user_id) {
-	$sql = <<<EOD
-DELETE FROM carts
- WHERE id = {$id} AND user_id = {$user_id}
-EOD;
-	return db_update($db, $sql);
+// カート内商品の削除
+function delete_cart($db, $cart_id) {
+	$sql =
+	'DELETE
+	FROM
+		carts
+	WHERE
+		cart_id = ?;';
+	$params = array($cart_id); 
+	return update_db($db, $sql, $params);
 }
 
-/**
- * @param PDO $db
- * @param int $user_id
- * @return int
- */
-function cart_clear($db, $user_id) {
-	$sql = 'DELETE FROM carts WHERE user_id = ' . $user_id;
-	return db_update($db, $sql);
+// ユーザー毎のカート内商品の削除
+function clear_user_carts($db, $user_id) {
+	$sql =
+	'DELETE
+	FROM
+		carts
+	WHERE
+		user_id = ?;';
+	$params = array($user_id);
+	return update_db($db, $sql, $params);
+}
+
+// カート内商品の合計金額を算出
+function sum_cart($cart_items) {
+	$sum_price = 0;
+	foreach ($cart_items as $cart_item) {
+		$sum_price += $cart_item['item_price'] * $cart_item['cart_amount'];
+	}
+	return $sum_price;
 }

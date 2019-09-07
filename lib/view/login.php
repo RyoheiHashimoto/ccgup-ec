@@ -14,7 +14,7 @@
 <meta name="description" content="">
 <meta name="author" content="">
 
-<title>ログイン：CodeCamp講師</title>
+<title>ログイン</title>
 
 <!-- Bootstrap core CSS -->
 <link href="./assets/bootstrap/dist/css/bootstrap.min.css" rel="stylesheet">
@@ -24,9 +24,9 @@
 </head>
 
 <body class="text-center">
-	<form method="post" action="<?php echo $_SERVER['SCRIPT_NAME']; ?>"
+	<form method="post" action="<?php echo h($_SERVER['SCRIPT_NAME']); ?>"
 		class="form-signin">
-<?php require DIR_VIEW_ELEMENT . 'output_message.php'; ?>
+<?php include DIR_VIEW_ELEMENT . 'output_message.php'; ?>
 		<h1 class="h3 mb-3 font-weight-normal">CodeCampSHOP</h1>
 				<label for="login-id" class="sr-only">Login ID</label> <input
 			type="text" id="login-id" name="login_id" class="form-control"
@@ -36,6 +36,7 @@
 			placeholder="Login Password" required>
 		<div class="checkbox mb-3">
 			</div>
+		<input type="hidden" name="token" value="<?php echo $_SESSION['token']; ?>">
 		<button class="btn btn-lg btn-primary btn-block" type="submit">Sign in</button>
 		<p class="mt-3 mb-3 text-muted">&copy; CodeCamp</p>
 	</form>
