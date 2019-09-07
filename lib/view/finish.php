@@ -19,16 +19,9 @@
 <body>
 <?php include DIR_VIEW_ELEMENT . 'output_navber.php'; ?>
 
-	<div class="container-fluid px-md-3">
-		<div class="row">
-			<div class="col-12">
-				<h1>購入完了</h1>
-			</div>
-		</div>
-
 <?php include DIR_VIEW_ELEMENT . 'output_message.php'; ?>
 
-<?php if ( !empty($cart_items)) { ?>
+<?php if (!empty($cart_items)) { ?>
 		<div class="col-xs-12 col-md-10 offset-md-1 cart-list">
 			<div class="row">
 				<table class="table">
@@ -44,7 +37,7 @@
 						</tr>
 					</thead>
 					<tbody>
-<?php foreach ( $cart_items as $cart_item ) {?>
+<?php foreach ($cart_items as $cart_item) {?>
 						<tr class="<?php echo h((0 === ($cart_item % 2)) ? 'stripe' : '') ; ?>">
 							<td rowspan="2"><img class="w-100"
 								src="<?php echo h(DIR_IMG . $cart_item['item_img']); ?>"></td>

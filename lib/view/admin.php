@@ -113,8 +113,6 @@
 											<input type="hidden" name="token" value="<?php echo $_SESSION['token']; ?>">
 											<input type="hidden" name="item_id" value="<?php echo h($item['item_id']); ?>">
 											<input type="hidden" name="action" value="update_status">
-<!-- マジックナンバーを定数化する、小さな関数(is_active_item)を作る -->
-<!-- 抽象度を上げること -->
 <?php if (is_active_item($item) === TRUE) { ?>
 											<button type="submit" class="btn btn-success">公開 → 非公開にする</button>
 											<input type="hidden" name="item_status" value="<?php echo h(INACTIVE); ?>">
