@@ -20,7 +20,7 @@ require_once DIR_MODEL . 'user.php';
 	// DB接続、DB情報を変数に代入
 	$db = connect_to_db();
 	// カート投入処理
-	$messages[] = __register($db);
+	$msg = __register($db);
 	// GETで送信されてきたorderのvalueを変数に代入
 	$order = get_get_data('order');
 	// DBより商品一覧テーブルを取得し配列に代入
@@ -41,15 +41,15 @@ function __register($db) {
 	check_logged_in($db);
 	// トークンチェック(CSRF対策)
 	if (is_valid_token() === FALSE) {
-		return ['error' => 'リクエストが不適切です。'];
+		return ['err_msg' => 'リクエストが不適切です。'];
 	}
 	// 商品idがPOSTされているかチェック
-	if (get_post_data('item_id') === FALSE) {
-		return ['error' => '商品の指定が不適切です。'];
+	if (!isset($_POST['item_id'])) {
+		return ['err_msg' => '商品の指定が不適切です。'];
 	}
 	// カートに商品を登録
 	if (register_cart($db, $_SESSION['user']['user_id'], $_POST['item_id'])) {
-		return ['success' => 'カートに登録しました。'];
+		return ['result_msg' => 'カートに登録しました。'];
 	}
-	return ['error' => 'カート登録に失敗しました。'];
+	return ['error_msg' => 'カート登録に失敗しました。'];
 }

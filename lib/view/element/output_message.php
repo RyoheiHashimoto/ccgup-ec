@@ -5,26 +5,24 @@
  * @copyright CodeCamp https://codecamp.jp
  */
 ?>
-<?php
-foreach ($messages as $message) { ?>
-<?php if (empty($message['success']) !== TRUE) { ?>
+<?php if (empty($msg['result_msg']) !== TRUE) { ?>
 <div class="row">
 	<div class="col-12 alert alert-success" role="alert">
-		<?php echo h($message['success']); ?>
+		<?php echo h($msg['result_msg']); ?>
 	</div>
 </div>
 <?php } ?>
-<?php if (empty($message['error']) !== TRUE) { ?>
+
+<?php if (empty($msg['err_msg']) !== TRUE) { ?>
 <div class="row">
 	<div class="col-12 alert alert-danger" role="alert">
 <?php
-	if (is_array($message['error'])) {
-		echo h(implode("\n", $message['error']));
+	if (is_array($msg['err_msg'])) {
+		echo h(implode("\n", $msg['err_msg']));
 	} else {
-		echo h($message['error']);
+		echo h($msg['err_msg']);
 	}
 	?>
 	</div>
 </div>
-<?php } ?>
 <?php } ?>

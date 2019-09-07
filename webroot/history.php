@@ -25,7 +25,7 @@ require_once DIR_MODEL . 'user.php';
 	// 注文履歴リストをDBより取得、変数に代入
 	$order_histories = get_order_histories($db, $_SESSION['user']['user_id']);
 	// 注文履歴が存在するか確認
-	$messages[] = check_existing($order_histories, '注文履歴');
+	$msg = check_existing($order_histories, '注文履歴');
 	// view読み込み
 	include_once DIR_VIEW . 'history.php';
 }

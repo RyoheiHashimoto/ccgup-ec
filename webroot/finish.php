@@ -20,34 +20,48 @@ require_once DIR_MODEL . 'user.php';
 	$db = connect_to_db();
 	// ログインチェック
 	check_logged_in($db);
+	// POSTとトークンをチェック
+	$msg = __check_post_and_token();
 	// カート内商品を取得
-	$cart_items = get_cart_list($db, $_SESSION['user']['user_id']);
+	$cart_items = __get_cart_list($db, $msg, $_SESSION['user']['user_id']);
 	// 商品の有無を確認
-	$messages[] = check_existing($cart_items, 'カート内の商品');
+	$msg = check_existing($cart_items, 'カート内の商品');
 	// 合計金額を算出
-	$total_price = sum_cart($cart_items);
+	$total_price = __sum_cart($msg, $cart_items);
 	// 購入処理
-	$messages[] = __finish($db, $cart_items);
+	$msg = __finish($db, $cart_items);
 	// トークン発行
 	make_token();
 	// view読み込み
 	include_once DIR_VIEW . 'finish.php';
 }
 
-function __finish($db, $cart_items) {
+function __check_post_and_token() {
 	// POSTメソッドであることとをチェック
 	if (is_post() === FALSE) {
-		return ['error' => 'リクエストが不適切です。'];
+		return ['err_msg' => 'リクエストが不適切です。'];
 	}
 	// トークンをチェック
 	if (is_valid_token() === FALSE) {
-		return ['error' => 'リクエストが不適切です。'];
+		return ['err_msg' => 'リクエストが不適切です。'];
 	}
-	// 購入処理へ
-	return __purchase($db, $cart_items);
 }
 
-function __purchase($db, $cart_items) {
+function __get_cart_list($db, $msg, $user_id) {
+	if (!empty($msg)) {
+		return;
+	}
+	return get_cart_list($db, $user_id);
+}
+
+function __sum_cart($msg, $cart_items) {
+	if (!empty($msg)) {
+		return;
+	}
+	return sum_cart($cart_items);
+}
+
+function __finish($db, $cart_items) {
 	// トランザクション開始
 	$db->beginTransaction();
 
@@ -65,11 +79,11 @@ function __purchase($db, $cart_items) {
 		// コミット(処理確定)
 		$db->commit();
 		// 完了メッセージを代入
-		return ['success' => 'ご購入、ありがとうございました。'];
+		return ['result_msg' => 'ご購入、ありがとうございました。'];
 		
 	} catch (PDOException $e) {
 		// ロールバック(処理取消)
 		$db->rollback();
-		return ['error' => '購入処理が失敗しました: ' . $e->getMessage()];
+		return ['err_msg' => '購入処理が失敗しました: ' . $e->getMessage()];
 	}
 }

@@ -19,11 +19,11 @@ require_once DIR_MODEL . 'user.php';
 	// ログイン中か確認
 	check_logged_in($db);
 	// カート内商品の更新処理
-	$messages[] = __update($db);
+	$msg = __update($db);
 	// カート内商品を取得
 	$cart_items = get_cart_list($db, $_SESSION['user']['user_id']);
-	// カートに商品があるかチェック
-	$messages[] = check_existing($cart_items, 'カート内商品');
+	// カート内商品の有無をのチェック
+	$msg = check_existing($cart_items, 'カート内の商品');
 	// 合計金額を取得
 	$total_price = sum_cart($cart_items);
 	// トークン発行(CSRF対策)
@@ -40,32 +40,32 @@ function __update($db) {
 	}
 	// トークンチェックの結果tokenキーの値が空(FALSE)ならばreturn
 	if (is_valid_token() === FALSE) {
-		return ['error' => 'リクエストが不適切です。'];
+		return ['err_msg' => 'リクエストが不適切です。'];
 	}
 	// actionキーの値が空ならばreturn
-	if (get_post_data('action') === FALSE) {
-		return ['error' => 'リクエストが不適切です。'];
+	if (!isset($_POST['action'])) {
+		return ['err_msg' => 'リクエストが不適切です。'];
 	}
 	// idキーの値が空ならばreturn
-	if (get_post_data('cart_id') === FALSE) {
-		return ['error' => '商品が指定されていません。'];
+	if (!isset($_POST['cart_id'])) {
+		return ['err_msg' => '商品が指定されていません。'];
+	}
+	if (!isset($_POST['cart_amount'])) {
+		return ['err_msg' => '商品の数量が指定されていません。'];
 	}
 	// 更新と削除の場合で分岐
 	switch ($_POST['action']) {
 		case 'update_cart' :
-			if (get_post_data('cart_amount') === FALSE) {
-				return ['error' => '商品の数量が指定されていません。'];
-			}
 			if (update_cart_amount($db, $_POST['cart_id'], $_POST['cart_amount']) === FALSE) {
-				return ['error' => '購入数を変更できませんでした。'];
+				return ['err_msg' => '購入数を変更できませんでした。'];
 			} 
-			return ['success' => '購入数を変更しました。'];
+			return ['result_msg' => '購入数を変更しました。'];
 		case 'delete_cart' :
-			if (delete_cart($db, $_POST['cart_id'], $_SESSION['user']['user_id']) === FALSE) {
-				return ['error' => '商品を削除できませんでした。'];
+			if (delete_cart($db, $_POST['cart_id'], $_SESSION['user']['user_id'])) {
+				return ['err_msg' => '商品を削除できませんでした。'];
 			}
-			return ['success' => '商品を削除しました。'];
+			return ['result_msg' => '商品を削除しました。'];
 	}
 	// 上記の条件に当てはまらなかった場合
-	return ['error' => 'リクエストが不適切です。'];
+	return ['err_msg' => 'リクエストが不適切です。'];
 }

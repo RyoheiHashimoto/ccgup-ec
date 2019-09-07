@@ -7,6 +7,7 @@
 
 function connect_to_db() {
 	$dsn = 'mysql:charset=utf8;dbname=' . DB_NAME . ';host=' . DB_HOST;
+	// $dbhが適切かと思われる、要修正
 	try {
 		$db = new PDO($dsn, DB_USER, DB_PASS);
 		$db->exec("SET NAMES 'UTF8'");
@@ -65,11 +66,14 @@ function is_valid_file_extension($file_extension) {
 	}
 }
 
-// 一意のファイル名をつける
+// ★一意のファイル名をつける
 function set_unique_file_name($dir, $file_extension) {
-	$unique_file_name = md5(uniqid(mt_rand(), true)) . '.' . $file_extension;
-	if (file_exists($dir . $unique_file_name)) {
-		return set_unique_file_name($dir, $file_extension);
+	$unique_file_name = '';
+	for ($i = 0; $i < 10; $i++) {
+		$unique_file_name = md5(uniqid(mt_rand(), true)) . '.' . $file_extension;
+		if (!file_exists($dir . $unique_file_name)) {
+			break;
+		}
 	}
 	return $unique_file_name;
 }
@@ -103,6 +107,8 @@ function is_registered_user($db) {
 	return isset($user);
 }
 
+// 
+
 // ユーザーの権限ごとに適切なページにリダイレクト
 function redirect_to_appropriate_page() {
 	if (is_admin($_SESSION['user'])) {
@@ -125,12 +131,7 @@ function redirect_to($url) {
 
 // POSTメソッドかどうか
 function is_post() {
-    return $_SERVER['REQUEST_METHOD'] === 'POST';
-}
-
-// POSTメソッドで変数がセットされていることをチェック
-function get_post_data($key) {
-	return isset($_POST[$key]);
+    return $_SERVER['REQUEST_METHOD'] === "POST";
 }
 
 // GETメソッドで変数がセットされていることをチェック
@@ -186,13 +187,8 @@ function is_number($value) {
 // 商品etcがあるか確認
 function check_existing($items, $item_name) {
 	if (empty($items)) {
-		return ['error' => $item_name . 'はありません。'];
+		return ['err_msg' => $item_name . 'はありません。'];
 	}
-}
-
-// 偶数番目の商品欄かどうか判定
-function is_even_number_section($section) {
-	return $section % 2 === 0;
 }
 
 // XSS対策
@@ -200,7 +196,7 @@ function h($str) {
 	return htmlspecialchars($str, ENT_QUOTES, 'UTF-8');
 }
 
-// デバッグ用
-function v($var) {
-	return var_dump($var);
+// 偶数番目の商品欄かどうか判定
+function is_even_number_section($section) {
+	return $section % 2 === 0;
 }

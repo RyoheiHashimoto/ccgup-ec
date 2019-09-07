@@ -26,7 +26,7 @@ require_once DIR_MODEL . 'user.php';
 	// 購入明細リストをDBより取得、変数に代入
 	$order_details = get_order_details($db, $order_history_id);
 	// 購入明細が存在するか確認
-	$messages[] = check_existing($order_details, '購入明細');
+	$msg = check_existing($order_details, '購入明細');
 	// view読み込み
 	include_once DIR_VIEW . 'detail.php';
 }
