@@ -4,66 +4,67 @@
  * @license https://creativecommons.org/licenses/by-nc-sa/4.0/deed.ja
  * @copyright CodeCamp https://codecamp.jp
  */
+// config読み込み
 require_once '../lib/config/const.php';
 
+// model読み込み
 require_once DIR_MODEL . 'function.php';
 require_once DIR_MODEL . 'user.php';
 
+// 処理開始
 {
+	// セッション開始
 	session_start();
-	$db = db_connect();
-
-	$response = array();
-
-	__check_logined($db);
-	__login($db, $response);
-
-	require_once DIR_VIEW  . 'login.php';
+	// DB接続、ハンドルを変数に代入
+	$db = connect_to_db();
+	// ユーザーがログイン中かどうかチェック
+	__check_logged_in($db); 
+	// ログイン認証
+	$messages[] = __authenticate_user($db);
+	// トークン発行(CSRF対策)
+	make_token();
+	// view読み込み
+	include_once DIR_VIEW  . 'login.php';
 }
 
-/**
- * @param PDO $db
- */
-function __check_logined($db) {
-	if (empty($_SESSION['user'])) {
+// ユーザーがログイン中かチェック
+function __check_logged_in($db) {
+	// ユーザーのセッションが存在しなければ処理を中止→ユーザー認証へ
+	if (is_logged_in() === FALSE) {
 		return;
 	}
-
-	$user = user_get($db, $_SESSION['user']['id']);
-	if (empty($user)) {
-		header('Location: ./logout.php');
-		exit;
+	// 登録されていないユーザーでログイン中であればログアウト処理
+	if (is_registered_user($db) === FALSE) {
+		redirect_to(LOGOUT_URL);
 	}
-
-	if (empty($_SESSION['user']['is_admin'])) {
-		header('Location: ./top.php');
-	} else {
-		header('Location: ./admin.php');
-	}
-	exit;
+	// 上記に当てはまらなければユーザーの権限ごとに適切なページにリダイレクト
+	redirect_to_appropriate_page();
 }
 
-/**
- * @param PDO $db
- * @param array $response
- */
-function __login($db, &$response) {
+// ユーザー認証
+function __authenticate_user($db) {
+	// POSTメソッドがなければ以下の処理はしない
 	if ($_SERVER['REQUEST_METHOD'] !== 'POST') {
 		return;
 	}
-
-	$user = user_get_login($db, $_POST['login_id'], $_POST['password']);
-	if (empty($user)) {
-		$response['error_msg'] = 'IDまたはパスワードが違います。';
-		return;
+	// トークンチェック(CSRF対策)
+	if (is_valid_token() === FALSE) {
+		return ['error' => 'リクエストが不適切です。'];
 	}
-
-	$_SESSION['user'] = $user;
-
-	if (empty($user['is_admin'])) {
-		header('Location: ./top.php');
-	} else {
-		header('Location: ./admin.php');
+	if (get_post_data('login_id') === FALSE) {
+		return ['error' => 'リクエストが不適切です。'];
 	}
-	exit;
+	if (get_post_data('password') === FALSE) {
+		return ['error' => 'リクエストが不適切です。'];
+	}
+	// フォームからPOSTされたIDとPWで、登録済みユーザーを参照
+	$registered_user = get_registered_user($db, $_POST['login_id'], $_POST['password']);
+	// 該当のユーザーが無ければ処理を中止
+	if (empty($registered_user)) {
+		return ['error' => 'IDまたはパスワードが違います。'];
+	}
+	// 上記チェックで問題なければセッション変数にユーザー情報を代入
+	$_SESSION['user'] = $registered_user;
+	// ユーザーの権限ごとに適切なページにリダイレクト
+	redirect_to_appropriate_page();
 }

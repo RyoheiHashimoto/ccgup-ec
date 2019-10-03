@@ -5,32 +5,45 @@
  * @copyright CodeCamp https://codecamp.jp
  */
 
-/**
- * @param PDO $db
- * @param int $login_id
- * @param string $password
- * @return NULL|array
- */
-function user_get_login($db, $login_id, $password) {
-	$sql = <<<EOD
- SELECT id, login_id, password, is_admin, create_date, update_date
- FROM users
- WHERE login_id = '{$login_id}' AND password = sha1('{$password}')
-EOD;
-	return db_select_one($db, $sql);
+# ユーザーを参照
+
+// ログイン中のユーザーを参照
+function get_login_user($db) {
+	return get_user($db, $_SESSION['user']['user_id']);
 }
 
-/**
- * @param PDO $db
- * @param int $id
- * @return NULL|array
- */
-function user_get($db, $id) {
-	$sql = <<<EOD
- SELECT id, login_id, password, is_admin, create_date, update_date
- FROM users
- WHERE id = {$id}
-EOD;
+// 指定のユーザーを参照
+function get_user($db, $user_id) {
+	$sql =
+	'SELECT
+		user_id,
+		login_id,
+		password,
+		is_admin
+ 	FROM
+	 	users
+	WHERE
+		user_id = ?';
+	$params = array($user_id);
+	return get_row($db, $sql, $params);
+}
 
-	return db_select_one($db, $sql);
+// ログインIDとPWの合致するユーザーを参照
+function get_registered_user($db, $login_id, $password) {
+	$sql =
+		'SELECT
+			user_id,
+			login_id,
+			password,
+			is_admin
+		FROM
+			users
+		WHERE
+			login_id = :login_id
+			AND password = sha1(:password);';
+	$params = array(
+		':login_id' => $login_id,
+		':password' => $password
+	);
+	return get_row($db, $sql, $params);
 }
