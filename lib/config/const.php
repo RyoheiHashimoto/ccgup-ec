@@ -5,12 +5,6 @@
  * @copyright CodeCamp https://codecamp.jp
  */
 
-// MySQL接続情報
-define('DB_USER', 'codecamp_user');     // MySQLのユーザ名
-define('DB_PASS', '@CodeCamp0');        // MySQLのパスワード
-define('DB_NAME', 'codecamp_db');       // データベース名
-define('DB_HOST', 'localhost');         // データベースのホスト名又はIPアドレス
-
 // ディレクトリ
 define("DIR_APP", dirname(dirname(__FILE__)) . '/');    // システムのベースディレクトリ
 define("DIR_IMG",  "./img/");                           // 画像ディレクトリのパス（webrootからの相対)
